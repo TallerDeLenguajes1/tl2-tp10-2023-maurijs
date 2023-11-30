@@ -1,0 +1,11 @@
+@{ 
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+@model Usuario
+<h2>Confirmar eliminación</h2>
+
+<form asp-controller="Usuario" asp-action="EliminarForm">
+    <input asp-for="@Model.Id" type="hidden" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+</form>

@@ -1,0 +1,25 @@
+@{ 
+    ViewData["Title"] = "Editar Tablero";
+}
+
+@model EspacioTareas.Tablero
+
+<h1>@ViewData["Title"]</h1>
+<form asp-controller="Tablero" asp-action="EditarTableroFromForm" method="post">
+    <input hidden asp-for="@Model.Id">
+    <div class="form-group">
+        <label asp-for="@Model.IdUsuarioPropietario">Id del usuario propietario</label>
+        <input asp-for="@Model.IdUsuarioPropietario" class="form-control" id="idUsuarioP" />
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Nombre">Nombre</label>
+        <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Descripcion">descripcion</label>
+        <input asp-for="@Model.Descripcion" class="form-control" id="descripcion" />
+    </div>
+    <button type="submit" class="btn btn-primary" >Enviar</button>
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

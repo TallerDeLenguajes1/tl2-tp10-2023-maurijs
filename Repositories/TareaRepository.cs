@@ -183,7 +183,7 @@ namespace EspacioRepositorios
             }
         }
 
-        public Tarea ModificarTarea(int idTarea, Tarea tarea)
+        public Tarea ModificarTarea(Tarea tarea)
         {
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion)){
                 
@@ -193,7 +193,7 @@ namespace EspacioRepositorios
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
                         command.CommandText = $"UPDATE Tarea SET nombre = @nombre, descripcion = @descripcion, estado = @estado, color = @color, id_tablero = @idTablero, id_usuario_asignado = @idUsuarioAsignado WHERE id = @idTarea;";
-                        command.Parameters.Add(new SQLiteParameter("idTarea",idTarea));
+                        command.Parameters.Add(new SQLiteParameter("idTarea",tarea.Id));
                         command.Parameters.Add(new SQLiteParameter("nombre",tarea.Nombre));
                         command.Parameters.Add(new SQLiteParameter("descripcion",tarea.Descripcion));
                         command.Parameters.Add(new SQLiteParameter("estado",(int)tarea.Estado));
@@ -237,5 +237,46 @@ namespace EspacioRepositorios
                 return filasAfectadas;
             }
         }
+
+        public List<Tarea> GetAllTareas()
+        {
+            var listaTareas = new List<Tarea>();
+            using var connection = new SQLiteConnection(cadenaConexion);
+            try
+            {
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandText = "SELECT * FROM Tarea";
+                command.ExecuteNonQuery();
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var tarea = new Tarea
+                        {
+                            Id = Convert.ToInt32(reader["id_tablero"]),
+                            IdTablero = Convert.ToInt32(reader["id_tablero"]),
+                            Nombre = reader["nombre"].ToString(),
+                            Color = reader["color"].ToString(),
+                            Estado = (EstadoTarea)reader["estado"],
+                            Descripcion = reader["descripcion"].ToString(),
+                            IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]),
+                        };
+                        listaTareas.Add(tarea);
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return listaTareas;
+        }
+
     }
 }

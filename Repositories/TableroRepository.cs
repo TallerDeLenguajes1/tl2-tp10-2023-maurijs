@@ -169,8 +169,9 @@ namespace EspacioRepositorios
             return tablero;
         }
 
-        public Tablero ModificarTablero(int idTablero, Tablero T)
+        public Tablero ModificarTablero(Tablero T)
         {
+            
            using(var connection = new SQLiteConnection(cadenaConexion))
            {
                 try{
