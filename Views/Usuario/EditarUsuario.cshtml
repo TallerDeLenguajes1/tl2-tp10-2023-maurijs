@@ -2,7 +2,9 @@
     ViewData["Title"] = "Editar Usuario";
 }
 
+@using EspacioTareas
 @model EspacioTareas.Usuario
+
 
 <h1>@ViewData["Title"]</h1>
 <form asp-controller="Usuario" asp-action="EditarUsuarioFromForm" method="post">
@@ -11,5 +13,5 @@
         <label asp-for="@Model.Nombre">Nombre</label>
         <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
     </div>
-    <button type="submit" class="btn btn-primary" >Enviar</button>
+    <button type="submit" class="btn btn-primary">Enviar</button>
 </form>

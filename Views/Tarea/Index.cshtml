@@ -2,6 +2,7 @@
     ViewData["Title"] = "Tareas";
 }
 
+@using EspacioTareas
 @model List<EspacioTareas.Tarea>
 
 <h2>Tarea List</h2>
@@ -26,7 +27,7 @@
                 <td hidden>@tarea.Id</td>
                 <td>@tarea.IdTablero</td>
                 <td>@tarea.Nombre</td>
-                <td>@tarea.Estado</td>
+                <td>@((int)tarea.Estado)</td>
                 <td>@tarea.Descripcion</td>
                 <td>@tarea.Color</td>
                 <td>@tarea.IdUsuarioAsignado</td>

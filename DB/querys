@@ -1,0 +1,6 @@
+SELECT id FROM USUARIO;
+-- a)
+INSERT INTO Usuario (nombre_usuario) VALUES ('joaquin');
+INSERT INTO Tablero (id_usuario_propietario, nombre, descripcion) VALUES (3,'juan','alto');
+INSERT INTO Tarea (id_tablero, nombre, descripcion, estado, color, id_usuario_asignado) VALUES (2, 'tarea1', 'descripcion1', 2, 'rojo', 2);
+-- Modificarelnombredeunatarea e)Modificarelestadodeunatarea f) Modificarnombredeusuario g)Eliminarunatarea h)Cantidaddetareasenunestado i) Listartareasasignadaaunusuario j) Listartodaslastareasdeuntablero

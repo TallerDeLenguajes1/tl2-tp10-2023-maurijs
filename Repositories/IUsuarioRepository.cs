@@ -5,7 +5,7 @@ namespace EspacioRepositorios
     {
         Usuario CrearUsuario(Usuario user);
         List<Usuario> GetAll();
-        Usuario ModificarUsuario(int id, Usuario user);
+        Usuario ModificarUsuario(Usuario user);
         Usuario GetUsuarioById(int id);
         int EliminarUsuario(int id);
     }

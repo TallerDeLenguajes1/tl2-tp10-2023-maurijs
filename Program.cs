@@ -3,6 +3,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//var cadenaDeConexion = builder.Configuration.GetConnectionString("SqliteConexion")!;
+//builder.Services
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -5,7 +5,7 @@ namespace EspacioRepositorios
 {
     public class TableroRepository : ITableroRepository
     {
-        private readonly string cadenaConexion = "Data Source=DB/kanban.db;Cache=Shared";
+        private readonly string cadenaConexion = "Data Source=DB/kanban.sql;Cache=Shared";
 
         public Tablero CrearTablero(Tablero T)
         {

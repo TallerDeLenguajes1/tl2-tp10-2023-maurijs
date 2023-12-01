@@ -41,7 +41,8 @@ public class UsuarioController : Controller
 
     [HttpPost]
     public IActionResult EditarUsuarioFromForm([FromForm] Usuario usuario, int id){
-        repositoryUsuario.ModificarUsuario(id, usuario);
+        usuario.Id = id;
+        repositoryUsuario.ModificarUsuario(usuario);
         return RedirectToAction("Index");
     }
 
