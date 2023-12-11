@@ -2,11 +2,12 @@
     ViewData["Title"] = "Agregar Tablero";
 }
 
-@using EspacioTareas
-@model EspacioTareas.Tablero
+@using Tp11.ViewModels
+@model TableroViewModel //Por el controller mando un objeto AgregarTableroViewModel vacio
 
 <h1>@ViewData["Title"]</h1>
 <form asp-controller="Tablero" asp-action="AgregarTableroFromForm" method="post">
+@{/*Asigno los datos del formulario a los campos del objeto ViewModel y lo mando al metodo AgregarTableroFromForm*/ }
     <div class="form-group">
         <label asp-for="@Model.Id"></label>
         <input asp-for="@Model.Id" class="form-control" id="id" />

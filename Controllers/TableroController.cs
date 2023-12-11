@@ -3,6 +3,7 @@ using EspacioRepositorios;
 using EspacioTareas;
 using Microsoft.AspNetCore.Mvc;
 using tp10.Models;
+using Tp11.ViewModels;
 
 namespace tp10.Controllers;
 
@@ -26,11 +27,15 @@ public class TableroController : Controller
 
     [HttpGet]
     public IActionResult AgregarTablero(){ //Si agrego parametros envia un bad request
-        return View(new Tablero());
+        return View(new TableroViewModel()); 
     }
 
     [HttpPost]
-    public IActionResult AgregarTableroFromForm([FromForm] Tablero tablero){
+    public IActionResult AgregarTableroFromForm(TableroViewModel tableroVM){
+        // Si el modelo no es valido vuelve al index
+        if(!ModelState.IsValid) return RedirectToAction("Index");
+        //Convierto el tablero view model a Tablero
+        var tablero = tableroVM.ToModel();
         tableroRepository.CrearTablero(tablero);
         return RedirectToAction("Index");
     }
