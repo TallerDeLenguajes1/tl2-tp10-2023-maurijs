@@ -1,5 +1,5 @@
 using System.Data.SQLite;
-using EspacioTareas;
+using tp10.Models;
 namespace EspacioRepositorios
 {
     public class TareaRepository : ITareaRepository

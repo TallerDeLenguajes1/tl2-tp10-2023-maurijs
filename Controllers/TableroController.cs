@@ -3,21 +3,22 @@ using System.Diagnostics;
 using EspacioRepositorios;
 using Microsoft.AspNetCore.Mvc;
 using Tp11.ViewModels;
-using EspacioTareas;
+using tp10.Models;
 
 public class TableroController : Controller
 {
-    private readonly ILogger<TableroController> _logger;
+    private readonly ILogger<HomeController> _logger;
 
     private readonly TableroRepository tableroRepository;
 
-    public TableroController(ILogger<TableroController> logger)
+    public TableroController(ILogger<HomeController> logger)
     {
         _logger = logger;
         tableroRepository = new TableroRepository();
     }
 
    public IActionResult Index(){
+        if(!IsLogged()) return NotFound();
         var tableros = tableroRepository.GetAllTableros();
         return View(tableros);
         /*En este caso, estás devolviendo la vista sin especificar el nombre de la vista, pero estás pasando un objeto de tipo List<Tablero> como modelo a esa vista. Esto asume que hay una vista con el mismo nombre del método de acción que está siendo ejecutado. Por ejemplo, si tu método de acción se llama Detalle y devuelves View(producto), ASP.NET MVC buscará automáticamente una vista llamada "Detalle" para renderizar y le pasará el objeto Producto como modelo.*/
@@ -44,7 +45,7 @@ public class TableroController : Controller
     }
 
     [HttpPost]
-    public IActionResult EditarTableroFromForm([FromForm] Tablero tablero){
+    public IActionResult EditarTableroFromForm(Tablero tablero){
         tableroRepository.ModificarTablero(tablero);
         return RedirectToAction("Index");
     }
@@ -61,6 +62,19 @@ public class TableroController : Controller
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error(){
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    private bool IsAdmin()
+    {
+        if(HttpContext.Session != null && HttpContext.Session.GetString("Rol") ==  Enum.GetName(Rol.administrador)){
+            return true;
+        }
+        return false;
+    }
+    private bool IsLogged()
+    {
+        if (HttpContext.Session != null) return true;
+        return false;
     }
 
 }

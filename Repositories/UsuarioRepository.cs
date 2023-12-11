@@ -1,5 +1,5 @@
 using System.Data.SQLite;
-using EspacioTareas;
+using tp10.Models;
 namespace EspacioRepositorios
 {
     public class UsuarioRepository : IUsuarioRepository
@@ -8,7 +8,7 @@ namespace EspacioRepositorios
         private readonly string cadenaConexion = "Data Source=DB/kanban.sql;Cache=Shared";
         public Usuario CrearUsuario(Usuario user)
         {
-            var query = "INSERT INTO Usuario (nombre_usuario) VALUES (@nombre)";
+            var query = "INSERT INTO Usuario (nombre_usuario, contrasenia, rol) VALUES (@nombre, @contrasenia, @rol)";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
             {
                 try{
@@ -16,6 +16,8 @@ namespace EspacioRepositorios
                     using (var command = new SQLiteCommand(query, connection))
                     {
                         command.Parameters.Add(new SQLiteParameter("@nombre", user.Nombre));
+                        command.Parameters.Add(new SQLiteParameter("@contrasenia", user.Contrasenia));
+                        command.Parameters.Add(new SQLiteParameter("@rol", Convert.ToInt32(user.Rol)));
                         command.ExecuteNonQuery(); 
                     }
                 }
@@ -68,9 +70,11 @@ namespace EspacioRepositorios
                 try{
                     connection.Open();
                     using SQLiteCommand command = connection.CreateCommand();
-                    command.CommandText = "UPDATE Usuario SET nombre_usuario = @nombre WHERE id = @id;";
+                    command.CommandText = "UPDATE Usuario SET nombre_usuario = @nombre, contrasenia = @contrasenia, rol = @rol WHERE id = @id;";
                     command.Parameters.Add(new SQLiteParameter("@id", user.Id));
                     command.Parameters.Add(new SQLiteParameter("@nombre", user.Nombre));
+                    command.Parameters.Add(new SQLiteParameter("@contrasenia", user.Contrasenia));
+                    command.Parameters.Add(new SQLiteParameter("@rol", Convert.ToInt32(user.Rol)));
                     command.ExecuteNonQuery();   
                 } 
                 catch (Exception ex){
@@ -98,6 +102,8 @@ namespace EspacioRepositorios
                         {
                             usuario.Id = Convert.ToInt32(reader["id"]);
                             usuario.Nombre = reader["nombre_usuario"].ToString();
+                            usuario.Contrasenia = reader["contrasenia"].ToString();
+                            usuario.Rol = (Rol)Convert.ToInt32(reader["rol"]);
                         }
                     }
                 }
@@ -132,22 +138,24 @@ namespace EspacioRepositorios
             return filasAfectadas;
         }
     
-        public Usuario GetUsuarioByPassAndName(string nombre, string password)
+        public Usuario GetUsuarioByPassAndName(string nombre, string contrasenia)
         {
             var usuario = new Usuario();
             using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion)){
                 try{
                     connection.Open();
                     using SQLiteCommand command = connection.CreateCommand();
-                    command.CommandText = "SELECT * FROM Usuario WHERE nombre_usuario = @nombre AND contrasenia = @password";
+                    command.CommandText = "SELECT * FROM Usuario WHERE nombre_usuario = @nombre AND contrasenia = @contrasenia";
                     command.Parameters.Add(new SQLiteParameter("@nombre", nombre));
-                    command.Parameters.Add(new SQLiteParameter("@password", password));
+                    command.Parameters.Add(new SQLiteParameter("@contrasenia", contrasenia));
                     using (SQLiteDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             usuario.Id = Convert.ToInt32(reader["id"]);
                             usuario.Nombre = reader["nombre_usuario"].ToString();
+                            usuario.Contrasenia = reader["contrasenia"].ToString();
+                            usuario.Rol = (Rol)Convert.ToInt32(reader["rol"]);
                         }
                     }
                 }

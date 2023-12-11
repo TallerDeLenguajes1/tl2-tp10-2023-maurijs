@@ -1,4 +1,4 @@
-using EspacioTareas;
+using tp10.Models;
 namespace EspacioRepositorios
 {
     public interface IUsuarioRepository

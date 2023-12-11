@@ -2,7 +2,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDistributedMemoryCache();
+
+/*var CadenaDeConexion = builder.Configuration.GetConnectionString("SqliteConexion")!.ToString();
+builder.Services.AddSingleton<string>(CadenaDeConexion);
+*/
+
+builder.Services.AddDistributedMemoryCache();//se agrega para login***********************************
+//builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();// se agrega para inyeccion de dependencia
+//builder.Services.AddScoped<ITableroRepository, TableroRepository>();// se agrega para inyeccion de dependencia
+//builder.Services.AddScoped<ITareaRepository, TareaRepository>();// se agrega para inyeccion de dependencia
 
 builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromSeconds(300);
@@ -26,7 +34,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();//se agrega para login***********************************
 app.UseAuthorization();
 
 app.MapControllerRoute(

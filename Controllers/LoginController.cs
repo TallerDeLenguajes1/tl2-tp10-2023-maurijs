@@ -3,7 +3,7 @@ using EspacioRepositorios;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Tp11.ViewModels;
-using EspacioTareas;
+using tp10.Models;
 namespace tp10.Controllers;
     
 public class LoginController : Controller{
@@ -14,7 +14,7 @@ public class LoginController : Controller{
     public LoginController(ILogger<LoginController> logger)
     {
         _logger = logger;
-        var repo = new UsuarioRepository();
+        repo = new UsuarioRepository();
     }
 
     public IActionResult Index()
@@ -24,12 +24,13 @@ public class LoginController : Controller{
     }
     public IActionResult Login(LoginViewModel login)//endpoint de control de acceso
     {
+            if(!ModelState.IsValid) RedirectToAction("Index"); // verifica que el LoginViewModel sea valido
             var usuario = repo.GetUsuarioByPassAndName(login.Nombre, login.Contrasenia);
-            logearUsuario(usuario);
-            return RedirectToRoute(new { controller = "Usuario", action = "Index" }); //Me lleva al index de usuario
-            
+            LoguearUsuario(usuario);
+            return RedirectToAction("Index", "Usuario"); //Me lleva al index de usuario
+
     }
-    private void logearUsuario(EspacioTareas.Usuario usuarioPorLoguear)
+    private void LoguearUsuario(Usuario usuarioPorLoguear)
     {
         HttpContext.Session.SetString("Nombre", usuarioPorLoguear.Nombre);
         HttpContext.Session.SetString("Id", usuarioPorLoguear.Id.ToString());

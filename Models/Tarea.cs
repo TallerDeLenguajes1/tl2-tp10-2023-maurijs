@@ -1,4 +1,4 @@
-namespace EspacioTareas
+namespace tp10.Models
 {
     public enum EstadoTarea
     {

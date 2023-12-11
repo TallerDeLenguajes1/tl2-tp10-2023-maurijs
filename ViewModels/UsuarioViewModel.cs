@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using EspacioTareas;
+using tp10.Models;
 namespace Tp11.ViewModels;
 
 public class UsuarioViewModel{

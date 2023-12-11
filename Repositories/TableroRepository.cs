@@ -1,6 +1,6 @@
 using System.Data.SqlClient;
 using System.Data.SQLite;
-using EspacioTareas;
+using tp10.Models;
 namespace EspacioRepositorios
 {
     public class TableroRepository : ITableroRepository

@@ -1,4 +1,4 @@
-namespace EspacioTareas
+namespace tp10.Models
 {
     public enum Rol {
         operador, 
@@ -13,7 +13,7 @@ namespace EspacioTareas
 
         public int Id { get => id; set => id = value; }
         public string Nombre { get => nombre; set => nombre = value; }
-        internal Rol Rol { get => rol; set => rol = value; }
+        public Rol Rol { get => rol; set => rol = value; }
         public string Contrasenia { get => contrasenia; set => contrasenia = value; }
 
         public Usuario(){}
