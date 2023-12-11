@@ -131,5 +131,34 @@ namespace EspacioRepositorios
             }
             return filasAfectadas;
         }
+    
+        public Usuario GetUsuarioByPassAndName(string nombre, string password)
+        {
+            var usuario = new Usuario();
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion)){
+                try{
+                    connection.Open();
+                    using SQLiteCommand command = connection.CreateCommand();
+                    command.CommandText = "SELECT * FROM Usuario WHERE nombre_usuario = @nombre AND contrasenia = @password";
+                    command.Parameters.Add(new SQLiteParameter("@nombre", nombre));
+                    command.Parameters.Add(new SQLiteParameter("@password", password));
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            usuario.Id = Convert.ToInt32(reader["id"]);
+                            usuario.Nombre = reader["nombre_usuario"].ToString();
+                        }
+                    }
+                }
+                catch (Exception ex){
+                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                }   
+                finally{
+                    connection.Close();
+                }
+            }
+            return usuario;
+        }
     }
 }

@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@using Tp11.ViewModels
+@model LoginViewModel
+
+<h1>@ViewData["Title"]</h1>
+<form asp-controller="Login" asp-action="Login" method="post">
+    <div class="form-group">
+        <label for="username">Nombre de usuario</label>
+        <input asp-for = "@Model.Nombre" class="form-control" id="username">
+    </div>
+    <div class="form-group">
+        <label for="pass">Password</label>
+        <input asp-for = "@Model.Contrasenia" class="form-control" id="pass">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

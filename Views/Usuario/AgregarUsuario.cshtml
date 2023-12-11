@@ -3,18 +3,33 @@
 }
 
 @using EspacioTareas
-@model EspacioTareas.Usuario
-
+@model Tp11.ViewModels.UsuarioViewModel
 
 <h1>@ViewData["Title"]</h1>
 <form asp-controller="Usuario" asp-action="AgregarUsuarioFromForm" method="post">
     <div class="form-group">
-        <label asp-for="@Model.Id">Id</label>
+        <label asp-for="@Model.Id"></label>
         <input asp-for="@Model.Id" class="form-control" id="id" />
+        <span asp-validation-for="@Model.Id" class="text-danger"></span>   
     </div>
     <div class="form-group">
-        <label asp-for="@Model.Nombre">Nombre</label>
+        <label asp-for="@Model.Nombre"></label>
         <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
+        <span asp-validation-for="@Model.Nombre" class="text-danger"></span>   
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Contrasenia"></label>
+        <input asp-for="@Model.Contrasenia" class="form-control" id="contrasenia" />
+        <span asp-validation-for="@Model.Contrasenia" class="text-danger"></span>   
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.Rol"></label>
+        <select asp-for="@Model.Rol" asp-items="Html.GetEnumSelectList<Rol>()" class="form-control">
+            <option value="">Seleccionar Nivel</option>
+        </select>
+        <span asp-validation-for="@Model.Rol" class="text-danger"></span> 
     </div>
     <button type="submit" class="btn btn-primary" >Enviar</button>
 </form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

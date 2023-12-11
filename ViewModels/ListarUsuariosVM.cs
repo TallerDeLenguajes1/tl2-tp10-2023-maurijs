@@ -1,7 +1,6 @@
-namespace Tp11.ViewModels;
 using System.ComponentModel.DataAnnotations;
-using Tp11.Models;
-namespace EspacioTareas.Usuario;
+using EspacioTareas;
+namespace Tp11.ViewModels;
 public class ListarUsuarioViewModel{
     private int id;
 
@@ -15,16 +14,16 @@ public class ListarUsuarioViewModel{
         id = usuario.Id;
         nombre = usuario.Nombre;
     }
-    public static List<ListarUsuarioViewModel> ToListUsuarioVM(List<Usuario> usuarios)
+    public static List<ListarUsuarioViewModel> FromlistaTolistaViewModel(List<Usuario> usuarios)
     {
-        ListarUsuarioViewModel listaUsuariosVM = new List<ListarUsuarioViewModel>();
+        var listaUsuariosVM = new List<ListarUsuarioViewModel>();
 
         foreach (var usuario in usuarios)
         {
             var usuarioVM = new ListarUsuarioViewModel(usuario);
             listaUsuariosVM.Add(usuarioVM);
         }
-        return(listaUsuariosVM);
+        return listaUsuariosVM;
     }
     
 }

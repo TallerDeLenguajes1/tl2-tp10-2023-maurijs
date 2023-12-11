@@ -1,11 +1,9 @@
+namespace tp10.Controllers;
 using System.Diagnostics;
 using EspacioRepositorios;
-using EspacioTareas;
 using Microsoft.AspNetCore.Mvc;
-using tp10.Models;
 using Tp11.ViewModels;
-
-namespace tp10.Controllers;
+using EspacioTareas;
 
 public class TableroController : Controller
 {
@@ -64,4 +62,5 @@ public class TableroController : Controller
     public IActionResult Error(){
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+
 }

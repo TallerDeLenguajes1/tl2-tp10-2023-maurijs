@@ -3,10 +3,10 @@
 }
 
 @using EspacioTareas
-@model Usuario
+@model Tp11.ViewModels.UsuarioViewModel
 <h2>Confirmar eliminación</h2>
 
-<form asp-controller="Usuario" asp-action="EliminarForm">
+<form asp-controller="Usuario" asp-action="EliminarFromFormulario">
     <input asp-for="@Model.Id" type="hidden" />
     <button type="submit" class="btn btn-danger">Eliminar</button>
 </form>

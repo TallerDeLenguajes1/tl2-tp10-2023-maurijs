@@ -1,4 +1,4 @@
-namespace tp10.Models;
+namespace EspacioTareas;
 
 public class ErrorViewModel
 {
