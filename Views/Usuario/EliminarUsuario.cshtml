@@ -2,11 +2,12 @@
     ViewData["Title"] = "Eliminar Usuario";
 }
 
-@using tp10.Models
-@model Tp11.ViewModels.UsuarioViewModel
+@using Tp11.ViewModels
+@model UsuarioViewModel
 <h2>Confirmar eliminación</h2>
 
 <form asp-controller="Usuario" asp-action="EliminarFromFormulario">
     <input asp-for="@Model.Id" type="hidden" />
     <button type="submit" class="btn btn-danger">Eliminar</button>
 </form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

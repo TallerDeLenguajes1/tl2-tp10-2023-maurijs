@@ -15,11 +15,25 @@ public class UsuarioViewModel{
     private Rol rol;
     [Required(ErrorMessage = "Este campo es requerido.")]
     public Rol Rol { get => rol; set => rol = value; }
+
+    public UsuarioViewModel(){}
     public UsuarioViewModel(Usuario usuario)
     {   
         nombre = usuario.Nombre;
         id = usuario.Id;
         contrasenia = usuario.Contrasenia;
         Rol = usuario.Rol;
+    }
+
+    public Usuario ToModel()
+    {
+        var usuario = new Usuario
+        {
+            Nombre = Nombre,
+            Id = Id,
+            Contrasenia = Contrasenia,
+            Rol = Rol
+        };
+        return usuario;
     }
 }

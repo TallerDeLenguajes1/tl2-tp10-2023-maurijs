@@ -19,28 +19,30 @@ public class UsuarioController : Controller
     //Muestra Usuarios
     public IActionResult Index(){
         //Si no esta loggeado redirecciona al index de login
-        if(!IsLogged()) return NotFound();
+        if(!IsLogged()) return RedirectToAction("Index", "Login");
         var usuarios = repositoryUsuario.GetAll();
-        var usuariosVM = ListarUsuarioViewModel.FromlistaTolistaViewModel(usuarios); 
+        var usuariosVM = ListarUsuarioViewModel.ToViewModel(usuarios); 
         return View(usuariosVM);
     }
 
     [HttpGet]
     public IActionResult AgregarUsuario(){ //Si agrego parametros envia un bad request
-        if(!IsLogged()) return NotFound();
-        return View(new Usuario());
+        if(!IsLogged()) return RedirectToAction("Index", "Login");
+        return View(new UsuarioViewModel());
     }
 
     [HttpPost]
-    public IActionResult AgregarUsuarioFromForm([FromForm] Usuario usuario){
-        if(!IsLogged()) return NotFound();
+    public IActionResult AgregarUsuarioFromForm(UsuarioViewModel usuarioVM){
+        if(!IsLogged()) return RedirectToAction("Index", "Login");
+        if(!ModelState.IsValid) return RedirectToAction("Index");
+        var usuario = usuarioVM.ToModel();
         repositoryUsuario.CrearUsuario(usuario);
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public IActionResult EditarUsuario(int idUsuario){  
-        if(!IsLogged()) return NotFound();
+        if(!IsLogged())return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
         var usuario = repositoryUsuario.GetUsuarioById(idUsuario);
         var usuarioVM = new UsuarioViewModel(usuario);
@@ -48,11 +50,11 @@ public class UsuarioController : Controller
     }
 
     [HttpPost]
-    public IActionResult EditarUsuarioFromForm([FromForm] Usuario usuario, int id){
-        if(!IsLogged()) return NotFound();
+    public IActionResult EditarUsuarioFromForm(UsuarioViewModel usuarioVM){
+        if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(IsAdmin()) 
         {
-            usuario.Id = id;
+            var usuario = usuarioVM.ToModel();
             repositoryUsuario.ModificarUsuario(usuario);
         }
         return RedirectToAction("Index");
@@ -61,7 +63,7 @@ public class UsuarioController : Controller
     public IActionResult EliminarUsuario(int idUsuario){
         // Si no se aclara que Login es el controller buscaria una accion en el controller actual
         //Si no esta logueado debe loguearse
-        if(!IsLogged()) return NotFound();
+        if(!IsLogged()) return RedirectToAction("Index", "Login");
         var usuarioAEliminar = repositoryUsuario.GetUsuarioById(idUsuario);
         //Solo se puede borrar si es administrador o si queres borrar tu propio usuario
         if(IsAdmin())
@@ -71,13 +73,12 @@ public class UsuarioController : Controller
         return RedirectToAction("Index", "Login");
     }
 
-    public IActionResult EliminarFromFormulario(Usuario usuario)
+    public IActionResult EliminarFromFormulario(UsuarioViewModel usuarioVM)
     {
-        if(!IsLogged()) return NotFound(); 
+        if(!IsLogged()) return RedirectToAction("Index", "Login"); 
         //Si no es admin o si el usuario que quiere eliminar no es el mismo entonces sale
-        repositoryUsuario.EliminarUsuario(usuario.Id);
-        return RedirectToAction("Index");
-        
+        repositoryUsuario.EliminarUsuario(usuarioVM.Id);
+        return RedirectToAction("Index");   
     }
 
     public IActionResult Privacy(){
@@ -93,7 +94,7 @@ public class UsuarioController : Controller
     }
     private bool IsLogged()
     {
-        if (HttpContext.Session != null) return true;
+        if (HttpContext.Session != null && !string.IsNullOrEmpty(HttpContext.Session.GetString("Nombre")) ) return true;
         return false;
     }
 

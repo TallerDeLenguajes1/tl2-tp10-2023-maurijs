@@ -2,16 +2,11 @@
     ViewData["Title"] = "Agregar Usuario";
 }
 
-@using tp10.Models
-@model Tp11.ViewModels.UsuarioViewModel
+@using Tp11.ViewModels
+@model UsuarioViewModel
 
 <h1>@ViewData["Title"]</h1>
 <form asp-controller="Usuario" asp-action="AgregarUsuarioFromForm" method="post">
-    <div class="form-group">
-        <label asp-for="@Model.Id"></label>
-        <input asp-for="@Model.Id" class="form-control" id="id" />
-        <span asp-validation-for="@Model.Id" class="text-danger"></span>   
-    </div>
     <div class="form-group">
         <label asp-for="@Model.Nombre"></label>
         <input asp-for="@Model.Nombre" class="form-control" id="nombre" />

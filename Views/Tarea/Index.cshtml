@@ -2,8 +2,8 @@
     ViewData["Title"] = "Tareas";
 }
 
-@using tp10.Models
-@model List<tp10.Models.Tarea>
+@using Tp11.ViewModels
+@model List<TareaViewModel>
 
 <h2>Tarea List</h2>
 
@@ -44,3 +44,5 @@
         </tr>
     </tfoot>
 </table>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

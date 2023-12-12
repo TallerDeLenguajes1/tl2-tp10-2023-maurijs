@@ -19,7 +19,7 @@ public class TareaController : Controller
 
     //Muestra Usuarios
     public IActionResult Index(){
-        if(!IsLogged()) return RedirectToAction("Index", "Login");
+        if(!IsLogged()) return RedirectToRoute(new { controller = "Login", action = "Index"});
         var listaTareas = new List<Tarea>();
         if (IsAdmin())
         {
@@ -30,19 +30,21 @@ public class TareaController : Controller
             var idUsuario = Convert.ToInt32(HttpContext.Session.GetString("Id"));
             listaTareas = tareaRepository.GetAllTareasDeUsuario(idUsuario);
         }
-        return View(TareaViewModel.ToListTareaVM(listaTareas));
+        return View(TareaViewModel.ToViewModel(listaTareas));
     }
 
     [HttpGet]
     public IActionResult AgregarTarea(){ //Si agrego parametros envia un bad request
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        return View(new Tarea());
+        return View(new TareaViewModel());
     }
 
     [HttpPost]
-    public IActionResult AgregarTareaFromForm([FromForm] Tarea tarea){
+    public IActionResult AgregarTareaFromForm(TareaViewModel tareaVM){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        
+        if(!IsAdmin()) return RedirectToAction("Index");
+        if(!ModelState.IsValid) return RedirectToAction("Index");;
+        var tarea = tareaVM.ToModel();
         tareaRepository.CrearTarea(tarea);
         return RedirectToAction("Index");
     }
@@ -50,17 +52,30 @@ public class TareaController : Controller
     [HttpGet]
     public IActionResult EditarTarea(int idTarea){  
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        return View(tareaRepository.GetTareaById(idTarea));
+        var tarea = tareaRepository.GetTareaById(idTarea);
+        if(tarea == null) return RedirectToAction("Index");
+        var tareaVM = new TareaViewModel(tarea); 
+        return View(tareaVM);
     }
 
     [HttpPost]
-    public IActionResult EditarTareaFromForm([FromForm] Tarea tarea){
+    public IActionResult EditarTareaFromForm(TareaViewModel Model){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        tareaRepository.ModificarTarea(tarea);
+        if(!ModelState.IsValid) return RedirectToAction("Index");
+
+        var tareaAEditar = tareaRepository.GetTareaById(Model.Id);
+        if(tareaAEditar == null) return RedirectToAction("Index");
+        tareaAEditar.Nombre = Model.Nombre;
+        tareaAEditar.IdTablero = Model.IdTablero;
+        tareaAEditar.Descripcion = Model.Descripcion;
+        tareaAEditar.IdUsuarioAsignado = Model.IdUsuarioAsignado;
+        tareaAEditar.Color = Model.Color;
+        tareaAEditar.Estado = Model.Estado;
+        tareaRepository.ModificarTarea(tareaAEditar);
         return RedirectToAction("Index");
     }
 
-    public IActionResult DeleteTarea(int idTarea){
+    public IActionResult EliminarTarea(int idTarea){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         tareaRepository.EliminarTarea(idTarea);
         return RedirectToAction("Index");
@@ -74,7 +89,7 @@ public class TareaController : Controller
     }
     private bool IsLogged()
     {
-        if (HttpContext.Session != null) return true;
+        if (HttpContext.Session != null && !string.IsNullOrEmpty(HttpContext.Session.GetString("Nombre")) ) return true;
         return false;
     }
 

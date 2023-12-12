@@ -14,7 +14,7 @@ public class ListarUsuarioViewModel{
         id = usuario.Id;
         nombre = usuario.Nombre;
     }
-    public static List<ListarUsuarioViewModel> FromlistaTolistaViewModel(List<Usuario> usuarios)
+    public static List<ListarUsuarioViewModel> ToViewModel(List<Usuario> usuarios)
     {
         var listaUsuariosVM = new List<ListarUsuarioViewModel>();
 

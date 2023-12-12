@@ -2,8 +2,8 @@
     ViewData["Title"] = "Editar Tarea";
 }
 
-@using tp10.Models
-@model tp10.Models.Tarea
+@using Tp11.ViewModels
+@model TareaViewModel
 
 <h1>@ViewData["Title"]</h1>
 <form asp-controller="Tarea" asp-action="EditarTareaFromForm" method="post">
@@ -36,3 +36,5 @@
     </div>
     <button type="submit" class="btn btn-primary" >Enviar</button>
 </form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -40,7 +40,7 @@ public class TareaViewModel{
     }
 
     //Recibe una lista de tareas y crea un lista de TareasViewModel
-    public static List<TareaViewModel> ToListTareaVM(List<Tarea> listaTareas)
+    public static List<TareaViewModel> ToViewModel(List<Tarea> listaTareas)
     {
         var listaTareaVM = new List<TareaViewModel>();
         foreach (var tarea in listaTareas)

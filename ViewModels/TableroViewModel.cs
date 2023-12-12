@@ -42,7 +42,7 @@ public class TableroViewModel{
         idUsuarioPropietario = t.IdUsuarioPropietario;
     }
 
-    public static List<TableroViewModel> ToListTableroVM(List<Tablero> tableros)
+    public static List<TableroViewModel> ToViewModel(List<Tablero> tableros)
     {
         List<TableroViewModel> ListarTableroVM = new List<TableroViewModel>();
         
