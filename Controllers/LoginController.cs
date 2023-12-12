@@ -1,20 +1,18 @@
-
-using EspacioRepositorios;
+namespace tp10.Controllers;
 using System.Diagnostics;
+using EspacioRepositorios;
 using Microsoft.AspNetCore.Mvc;
 using Tp11.ViewModels;
 using tp10.Models;
-namespace tp10.Controllers;
-    
-public class LoginController : Controller{
 
-    //List<Login> listaDeTiposDelogins = new List<Login>();
-    private readonly ILogger<LoginController> _logger;
-    private readonly UsuarioRepository repo;
-    public LoginController(ILogger<LoginController> logger)
+public class LoginController : Controller
+{
+    private readonly ILogger<UsuarioController> _logger;
+    private readonly IUsuarioRepository usuarioRepository;
+    public LoginController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository)
     {
         _logger = logger;
-        repo = new UsuarioRepository();
+        this.usuarioRepository = usuarioRepository;
     }
 
     public IActionResult Index()
@@ -25,7 +23,7 @@ public class LoginController : Controller{
     public IActionResult Login(LoginViewModel login)//endpoint de control de acceso
     {
             if(!ModelState.IsValid) RedirectToAction("Index"); // verifica que el LoginViewModel sea valido
-            var usuario = repo.GetUsuarioByPassAndName(login.Nombre, login.Contrasenia);
+            var usuario = usuarioRepository.GetUsuarioByPassAndName(login.Nombre, login.Contrasenia);
             LoguearUsuario(usuario);
             return RedirectToAction("Index", "Usuario"); //Me lleva al index de usuario
 

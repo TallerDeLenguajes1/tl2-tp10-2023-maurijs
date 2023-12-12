@@ -1,4 +1,5 @@
 using EspacioRepositorios;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,9 +13,15 @@ builder.Services.AddSingleton<string>(cadenaDeConexion);
 
 builder.Services.AddDistributedMemoryCache(); //se agrega para login************
 
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>(); // se agrega para inyeccion de dependencia
-builder.Services.AddScoped<ITableroRepository, TableroRepository>(); // se agrega para inyeccion de dependencia
-builder.Services.AddScoped<ITareaRepository, TareaRepository>();     // se agrega para inyeccion de dependencia
+
+
+//---- Inyeccion de dependencia ------
+//Ej: cuando se necesite un IUsuarioRepository, se proporcione una instancia de UsuarioRepository, y de manera similar para 
+//las otras interfaces y sus implementaciones. Esto facilita la prueba y el cambio de implementaciones sin afectar el 
+//resto del código.
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>(); 
+builder.Services.AddScoped<ITableroRepository, TableroRepository>(); 
+builder.Services.AddScoped<ITareaRepository, TareaRepository>();     
 
 builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromSeconds(300);
@@ -63,3 +70,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}"); // Indica la 
 
 app.Run();
+
