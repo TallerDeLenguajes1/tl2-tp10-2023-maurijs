@@ -29,7 +29,6 @@ public class TableroController : Controller
             listaTableros = tableroRepository.GetAllTablerosDeUsuario(idUsuario);
         }
         return View(TableroViewModel.ToViewModel(listaTableros));
-        /*En este caso, estás devolviendo la vista sin especificar el nombre de la vista, pero estás pasando un objeto de tipo List<Tablero> como modelo a esa vista. Esto asume que hay una vista con el mismo nombre del método de acción que está siendo ejecutado. Por ejemplo, si tu método de acción se llama Detalle y devuelves View(producto), ASP.NET MVC buscará automáticamente una vista llamada "Detalle" para renderizar y le pasará el objeto Producto como modelo.*/
     }
 
     [HttpGet]
