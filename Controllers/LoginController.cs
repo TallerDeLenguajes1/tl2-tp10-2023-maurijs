@@ -22,11 +22,22 @@ public class LoginController : Controller
     }
     public IActionResult Login(LoginViewModel login)//endpoint de control de acceso
     {
+        try
+        {
             if(!ModelState.IsValid) RedirectToAction("Index"); // verifica que el LoginViewModel sea valido
             var usuario = usuarioRepository.GetUsuarioByPassAndName(login.Nombre, login.Contrasenia);
             LoguearUsuario(usuario);
-            return RedirectToAction("Index", "Usuario"); //Me lleva al index de usuario
-
+            _logger.LogInformation("Usuario " + usuario.Nombre + " logueado exitosamente");
+            return RedirectToAction("Index", "Usuario");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+            _logger.LogWarning(
+                "Intento de acceso invalido - Usuario: " + login.Nombre + "/Contrasenia: " +login.Contrasenia
+            );
+        }
+        return RedirectToAction("Index"); //Me lleva al index de usuario
     }
     private void LoguearUsuario(Usuario usuarioPorLoguear)
     {

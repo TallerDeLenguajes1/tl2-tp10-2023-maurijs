@@ -27,8 +27,8 @@ namespace EspacioRepositorios
                         command.ExecuteNonQuery(); 
                     }
                 }
-                catch (Exception ex){
-                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                catch (Exception){
+                    throw; //Lanza la excepcion hacia arriba en la pila de llamadas 
                 }  
                 finally{
                     connection.Close();
@@ -60,8 +60,8 @@ namespace EspacioRepositorios
                         }
                     }
                 }
-                catch (Exception ex){
-                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                catch (Exception){
+                   throw;
                 }  
                 finally{
                     connection.Close();
@@ -71,6 +71,7 @@ namespace EspacioRepositorios
         }
         public Usuario ModificarUsuario(Usuario user)
         {
+
             using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
             {
                 try{
@@ -83,8 +84,8 @@ namespace EspacioRepositorios
                     command.Parameters.Add(new SQLiteParameter("@rol", Convert.ToInt32(user.Rol)));
                     command.ExecuteNonQuery();   
                 } 
-                catch (Exception ex){
-                        Console.WriteLine($"Ha ocurrido un error en modificar usuario: {ex.Message}");
+                catch (Exception){
+                    throw;
                 }
                 finally{
                         connection.Close();
@@ -113,13 +114,14 @@ namespace EspacioRepositorios
                         }
                     }
                 }
-                catch (Exception ex){
-                    Console.WriteLine($"Ha ocurrido un error en GetUsuarioById: {ex.Message}");
+                catch (Exception){
+                    throw;
                 }   
                 finally{
                     connection.Close();
                 }
             }
+            if(usuario == null) throw new Exception("Usuario no encontrado");
             return usuario;
         }
         public int EliminarUsuario(int id)
@@ -134,13 +136,14 @@ namespace EspacioRepositorios
                     command.Parameters.Add(new SQLiteParameter("id", id));
                     filasAfectadas = command.ExecuteNonQuery();
                 }
-                catch (Exception ex){
-                    Console.WriteLine($"Ha ocurrido un error al acceder a la base de datos: {ex.Message}");
-                }  
+                catch (Exception){
+                    throw;
+                }
                 finally{
                     connection.Close();
                 } 
             }
+            if(filasAfectadas == 0) throw new Exception("No se elimino el tablero");
             return filasAfectadas;
         }
     
@@ -165,13 +168,14 @@ namespace EspacioRepositorios
                         }
                     }
                 }
-                catch (Exception ex){
-                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                catch {
+                    throw;
                 }   
                 finally{
                     connection.Close();
                 }
             }
+            if(usuario == null) throw new Exception("Usuario no encontrado");
             return usuario;
         }
     }

@@ -84,9 +84,8 @@ namespace EspacioRepositorios
                 }
 
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+            catch {
+                throw;
             }
             finally
             {
@@ -124,9 +123,8 @@ namespace EspacioRepositorios
                 }
 
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+            catch {
+                throw;
             }
             finally
             {
@@ -162,14 +160,14 @@ namespace EspacioRepositorios
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+            catch {
+                throw;
             }
             finally
             {
                 connection.Close();
             }
+            if (tablero == null) throw new Exception("Tablero no encontrado");
             return tablero;
         }
 
@@ -190,8 +188,8 @@ namespace EspacioRepositorios
                         command.ExecuteNonQuery();
                     }
                 }
-                catch (Exception ex){
-                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                catch {
+                    throw;
                 }
                 finally
                 {

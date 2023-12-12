@@ -37,8 +37,8 @@ namespace EspacioRepositorios
                         }
                     } 
                 }
-                catch (Exception ex){
-                    Console.WriteLine($"Ha ocurrido un error al acceder a la base de datos: {ex.Message}");
+                catch {
+                    throw;
                 }  
                 finally{
                     connection.Close(); 
@@ -63,9 +63,8 @@ namespace EspacioRepositorios
                         filasAfectadas = command.ExecuteNonQuery();
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                catch {
+                    throw;
                 }
                 finally
                 {
@@ -102,15 +101,15 @@ namespace EspacioRepositorios
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                catch {
+                    throw;
                 }
                 finally
                 {
                     connection.Close(); // Asegura que se cierre la conexión, independientemente de si hay una excepción o no
                 }
             }
+            if(tarea == null) throw new Exception("Tarea no encontrada");
             return tarea;
         }
         public List<Tarea> GetAllTareasDeTablero(int idTablero)
@@ -140,9 +139,8 @@ namespace EspacioRepositorios
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                catch {
+                    throw;
                 }
                 finally
                 {
@@ -180,9 +178,8 @@ namespace EspacioRepositorios
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                catch {
+                    throw;
                 }
                 finally
                 {
@@ -212,8 +209,8 @@ namespace EspacioRepositorios
                         command.ExecuteNonQuery();
                     }
                 }
-                catch (Exception ex){
-                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                catch {
+                    throw;
                 }
                 finally{
                     connection.Close();
@@ -237,8 +234,8 @@ namespace EspacioRepositorios
                         filasAfectadas = command.ExecuteNonQuery();
                     }
                 }
-                catch (Exception ex){
-                    Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+                catch {
+                    throw;
                 }
                 finally{
                     connection.Close();
@@ -276,9 +273,8 @@ namespace EspacioRepositorios
                 }
 
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ha ocurrido un error: {ex.Message}");
+            catch {
+                throw;
             }
             finally
             {

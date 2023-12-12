@@ -35,8 +35,14 @@ public class UsuarioController : Controller
     public IActionResult AgregarUsuarioFromForm(UsuarioViewModel usuarioVM){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!ModelState.IsValid) return RedirectToAction("Index");
-        var usuario = usuarioVM.ToModel();
-        usuarioRepository.CrearUsuario(usuario);
+        try{
+            var usuario = usuarioVM.ToModel();
+            usuarioRepository.CrearUsuario(usuario);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+        } 
         return RedirectToAction("Index");
     }
 
@@ -45,8 +51,7 @@ public class UsuarioController : Controller
         if(!IsLogged())return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
         var usuario = usuarioRepository.GetUsuarioById(idUsuario);
-        var usuarioVM = new UsuarioViewModel(usuario);
-        return View(usuarioVM);
+        return View(new UsuarioViewModel(usuario));
     }
 
     [HttpPost]
@@ -54,30 +59,44 @@ public class UsuarioController : Controller
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(IsAdmin()) 
         {
-            var usuario = usuarioVM.ToModel();
-            usuarioRepository.ModificarUsuario(usuario);
+            try{
+                var usuario = usuarioVM.ToModel();
+                usuarioRepository.ModificarUsuario(usuario); 
+            } catch(Exception ex){
+                _logger.LogError(ex.ToString());
+            }
         }
         return RedirectToAction("Index");
     }
 
     public IActionResult EliminarUsuario(int idUsuario){
-        // Si no se aclara que Login es el controller buscaria una accion en el controller actual
+        try{
         //Si no esta logueado debe loguearse
-        if(!IsLogged()) return RedirectToAction("Index", "Login");
-        var usuarioAEliminar = usuarioRepository.GetUsuarioById(idUsuario);
-        //Solo se puede borrar si es administrador o si queres borrar tu propio usuario
-        if(IsAdmin())
-        {   //La vista requiere un UsuarioViewModel
-            if(usuarioAEliminar != null) return View(new UsuarioViewModel(usuarioAEliminar));
-        }  
-        return RedirectToAction("Index", "Login");
+            if(!IsLogged()) return RedirectToAction("Index", "Login");
+            var usuarioAEliminar = usuarioRepository.GetUsuarioById(idUsuario);
+            //Solo se puede borrar si es administrador o si queres borrar tu propio usuario
+            if(IsAdmin())
+            {   //La vista requiere un UsuarioViewModel
+                    if(usuarioAEliminar != null) return View(new UsuarioViewModel(usuarioAEliminar));
+            }  
+        }catch(Exception ex){
+            _logger.LogError(ex.ToString());
+        }
+        return RedirectToAction("Index");
     }
 
     public IActionResult EliminarFromFormulario(UsuarioViewModel usuarioVM)
     {
-        if(!IsLogged()) return RedirectToAction("Index", "Login"); 
-        //Si no es admin o si el usuario que quiere eliminar no es el mismo entonces sale
-        usuarioRepository.EliminarUsuario(usuarioVM.Id);
+        try
+        {
+            if(!IsLogged()) return RedirectToAction("Index", "Login"); 
+            //Si no es admin o si el usuario que quiere eliminar no es el mismo entonces sale
+            usuarioRepository.EliminarUsuario(usuarioVM.Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.ToString());
+        }
         return RedirectToAction("Index");   
     }
 

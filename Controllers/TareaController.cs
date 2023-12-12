@@ -21,16 +21,23 @@ public class TareaController : Controller
     public IActionResult Index(){
         if(!IsLogged()) return RedirectToRoute(new { controller = "Login", action = "Index"});
         var listaTareas = new List<Tarea>();
-        if (IsAdmin())
+        try{
+            if (IsAdmin())
+            {
+                listaTareas = tareaRepository.GetAllTareas();
+            }
+            else{
+                //No es admin
+                var idUsuario = Convert.ToInt32(HttpContext.Session.GetString("Id"));
+                listaTareas = tareaRepository.GetAllTareasDeUsuario(idUsuario);
+            }
+            return View(TareaViewModel.ToViewModel(listaTareas));
+        } 
+        catch (Exception ex)
         {
-            listaTareas = tareaRepository.GetAllTareas();
+            _logger.LogError($"Error: {ex.ToString}");
         }
-        else{
-            //No es admin
-            var idUsuario = Convert.ToInt32(HttpContext.Session.GetString("Id"));
-            listaTareas = tareaRepository.GetAllTareasDeUsuario(idUsuario);
-        }
-        return View(TareaViewModel.ToViewModel(listaTareas));
+        return RedirectToAction("Index");
     }
 
     [HttpGet]
@@ -40,44 +47,75 @@ public class TareaController : Controller
     }
 
     [HttpPost]
-    public IActionResult AgregarTareaFromForm(TareaViewModel tareaVM){
+    public IActionResult AgregarTareaFromForm(TareaViewModel tareaVM)
+    {
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
         if(!ModelState.IsValid) return RedirectToAction("Index");;
-        var tarea = tareaVM.ToModel();
-        tareaRepository.CrearTarea(tarea);
+        try
+        {
+            var tarea = tareaVM.ToModel();
+            tareaRepository.CrearTarea(tarea);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error: {ex.ToString}");
+        }
         return RedirectToAction("Index");
     }
 
     [HttpGet]
     public IActionResult EditarTarea(int idTarea){  
-        if(!IsLogged()) return RedirectToAction("Index", "Login");
-        var tarea = tareaRepository.GetTareaById(idTarea);
-        if(tarea == null) return RedirectToAction("Index");
-        var tareaVM = new TareaViewModel(tarea); 
-        return View(tareaVM);
+        try
+        {
+            if(!IsLogged()) return RedirectToAction("Index", "Login");
+            var tarea = tareaRepository.GetTareaById(idTarea);
+            if(tarea == null) return RedirectToAction("Index");
+            var tareaVM = new TareaViewModel(tarea); 
+            return View(tareaVM);
+        }
+        catch (Exception ex) 
+        {
+            _logger.LogError($"Error: {ex.ToString}");
+        }
+        return RedirectToAction("Index");
     }
 
     [HttpPost]
     public IActionResult EditarTareaFromForm(TareaViewModel Model){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!ModelState.IsValid) return RedirectToAction("Index");
-
-        var tareaAEditar = tareaRepository.GetTareaById(Model.Id);
-        if(tareaAEditar == null) return RedirectToAction("Index");
-        tareaAEditar.Nombre = Model.Nombre;
-        tareaAEditar.IdTablero = Model.IdTablero;
-        tareaAEditar.Descripcion = Model.Descripcion;
-        tareaAEditar.IdUsuarioAsignado = Model.IdUsuarioAsignado;
-        tareaAEditar.Color = Model.Color;
-        tareaAEditar.Estado = Model.Estado;
-        tareaRepository.ModificarTarea(tareaAEditar);
-        return RedirectToAction("Index");
+        try
+        {
+            var tareaAEditar = tareaRepository.GetTareaById(Model.Id);
+            if(tareaAEditar == null) return RedirectToAction("Index");
+            tareaAEditar.Nombre = Model.Nombre;
+            tareaAEditar.IdTablero = Model.IdTablero;
+            tareaAEditar.Descripcion = Model.Descripcion;
+            tareaAEditar.IdUsuarioAsignado = Model.IdUsuarioAsignado;
+            tareaAEditar.Color = Model.Color;
+            tareaAEditar.Estado = Model.Estado;
+            tareaRepository.ModificarTarea(tareaAEditar);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error: {ex.ToString}");
+        }
+        return BadRequest();
     }
 
     public IActionResult EliminarTarea(int idTarea){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        tareaRepository.EliminarTarea(idTarea);
+        try
+        {
+            tareaRepository.EliminarTarea(idTarea);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Error: {ex.ToString}");
+        }
         return RedirectToAction("Index");
     }
     private bool IsAdmin()

@@ -45,9 +45,15 @@ public class TableroController : Controller
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
         if(!ModelState.IsValid) return RedirectToAction("Index");
-        //Convierto el tablero view model a Tablero
-        var tablero = tableroVM.ToModel();
-        tableroRepository.CrearTablero(tablero);
+        try{
+            //Convierto el tablero view model a Tablero
+            var tablero = tableroVM.ToModel();
+            tableroRepository.CrearTablero(tablero);
+            return RedirectToAction("Index");       
+        }   
+        catch (Exception ex) {
+            _logger.LogError($"Error: {ex.ToString}");
+        }
         return RedirectToAction("Index");
     }
 
@@ -55,24 +61,43 @@ public class TableroController : Controller
     public IActionResult EditarTablero(int idTablero){  
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
-        var tablero = tableroRepository.GetTableroById(idTablero);
-        return View(new TableroViewModel(tablero));
+        try{
+            var tablero = tableroRepository.GetTableroById(idTablero);
+            return View(new TableroViewModel(tablero));
+        }  
+        catch (Exception ex){
+            _logger.LogError($"Error: {ex.ToString}");
+        }
+        return RedirectToAction("Index");
     }
 
     [HttpPost]
     public IActionResult EditarTableroFromForm(TableroViewModel tableroVM){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
-        var tablero = tableroVM.ToModel();
-        tableroRepository.ModificarTablero(tablero);
+        try{
+            var tablero = tableroVM.ToModel();
+            tableroRepository.ModificarTablero(tablero);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex) {
+            _logger.LogError($"Error: {ex.ToString}");
+        }
         return RedirectToAction("Index");
     }
 
     public IActionResult DeleteTablero(int idTablero){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
-        tableroRepository.EliminarTablero(idTablero);
+        try{
+            tableroRepository.EliminarTablero(idTablero);
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex) {
+            _logger.LogError($"Error: {ex.ToString}");
+        }
         return RedirectToAction("Index");
+        
     }
 
     public IActionResult Privacy(){
