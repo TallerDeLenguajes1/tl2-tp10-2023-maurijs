@@ -8,19 +8,19 @@ namespace tp10.Controllers;
 
 public class UsuarioController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly UsuarioRepository repositoryUsuario;
+    private readonly ILogger<UsuarioController> _logger;
+    private readonly IUsuarioRepository usuarioRepository;
 
-    public UsuarioController(ILogger<HomeController> logger){
+    public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository ){
         _logger = logger;
-        repositoryUsuario = new UsuarioRepository();
+        this.usuarioRepository = usuarioRepository;
     }
 
     //Muestra Usuarios
     public IActionResult Index(){
         //Si no esta loggeado redirecciona al index de login
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        var usuarios = repositoryUsuario.GetAll();
+        var usuarios = usuarioRepository.GetAll();
         var usuariosVM = ListarUsuarioViewModel.ToViewModel(usuarios); 
         return View(usuariosVM);
     }
@@ -36,7 +36,7 @@ public class UsuarioController : Controller
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!ModelState.IsValid) return RedirectToAction("Index");
         var usuario = usuarioVM.ToModel();
-        repositoryUsuario.CrearUsuario(usuario);
+        usuarioRepository.CrearUsuario(usuario);
         return RedirectToAction("Index");
     }
 
@@ -44,7 +44,7 @@ public class UsuarioController : Controller
     public IActionResult EditarUsuario(int idUsuario){  
         if(!IsLogged())return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
-        var usuario = repositoryUsuario.GetUsuarioById(idUsuario);
+        var usuario = usuarioRepository.GetUsuarioById(idUsuario);
         var usuarioVM = new UsuarioViewModel(usuario);
         return View(usuarioVM);
     }
@@ -55,7 +55,7 @@ public class UsuarioController : Controller
         if(IsAdmin()) 
         {
             var usuario = usuarioVM.ToModel();
-            repositoryUsuario.ModificarUsuario(usuario);
+            usuarioRepository.ModificarUsuario(usuario);
         }
         return RedirectToAction("Index");
     }
@@ -64,7 +64,7 @@ public class UsuarioController : Controller
         // Si no se aclara que Login es el controller buscaria una accion en el controller actual
         //Si no esta logueado debe loguearse
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        var usuarioAEliminar = repositoryUsuario.GetUsuarioById(idUsuario);
+        var usuarioAEliminar = usuarioRepository.GetUsuarioById(idUsuario);
         //Solo se puede borrar si es administrador o si queres borrar tu propio usuario
         if(IsAdmin())
         {   //La vista requiere un UsuarioViewModel
@@ -77,7 +77,7 @@ public class UsuarioController : Controller
     {
         if(!IsLogged()) return RedirectToAction("Index", "Login"); 
         //Si no es admin o si el usuario que quiere eliminar no es el mismo entonces sale
-        repositoryUsuario.EliminarUsuario(usuarioVM.Id);
+        usuarioRepository.EliminarUsuario(usuarioVM.Id);
         return RedirectToAction("Index");   
     }
 

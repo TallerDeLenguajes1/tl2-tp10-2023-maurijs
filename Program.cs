@@ -1,3 +1,4 @@
+using EspacioRepositorios;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,10 +8,11 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<string>(CadenaDeConexion);
 */
 
-builder.Services.AddDistributedMemoryCache();//se agrega para login***********************************
-//builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();// se agrega para inyeccion de dependencia
-//builder.Services.AddScoped<ITableroRepository, TableroRepository>();// se agrega para inyeccion de dependencia
-//builder.Services.AddScoped<ITareaRepository, TareaRepository>();// se agrega para inyeccion de dependencia
+builder.Services.AddDistributedMemoryCache();//se agrega para login************
+
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();// se agrega para inyeccion de dependencia
+builder.Services.AddScoped<ITableroRepository, TableroRepository>();// se agrega para inyeccion de dependencia
+builder.Services.AddScoped<ITareaRepository, TareaRepository>();// se agrega para inyeccion de dependencia
 
 builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromSeconds(300);

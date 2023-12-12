@@ -2,7 +2,7 @@ using tp10.Models;
 
 namespace EspacioRepositorios
 {
-    interface ITableroRepository
+    public interface ITableroRepository
     {
         Tablero CrearTablero(Tablero T);
         Tablero ModificarTablero(Tablero T);

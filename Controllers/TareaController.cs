@@ -8,12 +8,12 @@ namespace tp10.Controllers;
 
 public class TareaController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly TareaRepository tareaRepository;
-
-    public TareaController(ILogger<HomeController> logger){
+    private readonly ILogger<TareaController> _logger;
+    private readonly ITareaRepository tareaRepository;
+    //Inyeccion de dependencias
+    public TareaController(ILogger<TareaController> logger, ITareaRepository tareaRepository){
         _logger = logger;
-        tareaRepository = new TareaRepository();
+        this.tareaRepository = tareaRepository;
     }
 
 

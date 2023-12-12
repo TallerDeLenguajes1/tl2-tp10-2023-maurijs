@@ -7,14 +7,14 @@ using tp10.Models;
 
 public class TableroController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ILogger<TableroController> _logger;
 
-    private readonly TableroRepository tableroRepository;
+    private readonly ITableroRepository tableroRepository;
 
-    public TableroController(ILogger<HomeController> logger)
+    public TableroController(ILogger<TableroController> logger, ITableroRepository tableroRepository)
     {
         _logger = logger;
-        tableroRepository = new TableroRepository();
+        this.tableroRepository = tableroRepository;
     }
 
    public IActionResult Index(){
