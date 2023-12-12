@@ -5,11 +5,15 @@ namespace EspacioRepositorios
 {
     public class TableroRepository : ITableroRepository
     {
-        private readonly string cadenaConexion = "Data Source=DB/kanban.sql;Cache=Shared";
-
+        private readonly string cadenaDeConexion;
+        //Inyeccion de dependencias (cadenaDeConexion esta declarado en Program.cs y toma su valor en appsettings.json)
+        public TableroRepository(string cadenaDeConexion)
+        {
+            this.cadenaDeConexion = cadenaDeConexion;
+        }
         public Tablero CrearTablero(Tablero T)
         {
-            using SQLiteConnection connection = new SQLiteConnection(cadenaConexion);
+            using SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion);
             try
             {
                 connection.Open(); // va antes de crear el command
@@ -34,7 +38,7 @@ namespace EspacioRepositorios
         public int EliminarTablero(int idTablero)
         {
             int filasAfectadas = 0;
-            using var connection = new SQLiteConnection(cadenaConexion);
+            using var connection = new SQLiteConnection(cadenaDeConexion);
             try
             {
                 connection.Open();
@@ -57,7 +61,7 @@ namespace EspacioRepositorios
         public List<Tablero> GetAllTableros()
         {
             var listaTableros = new List<Tablero>();
-            using var connection = new SQLiteConnection(cadenaConexion);
+            using var connection = new SQLiteConnection(cadenaDeConexion);
             try
             {
                 connection.Open();
@@ -94,7 +98,7 @@ namespace EspacioRepositorios
         public List<Tablero> GetAllTablerosDeUsuario(int idUsuario)
         {
             var listaTableros = new List<Tablero>();
-            using var connection = new SQLiteConnection(cadenaConexion);
+            using var connection = new SQLiteConnection(cadenaDeConexion);
             try
             {
                 connection.Open();
@@ -134,7 +138,7 @@ namespace EspacioRepositorios
         public Tablero GetTableroById(int idTablero)
         {
             var tablero = new Tablero();
-            using var connection = new SQLiteConnection(cadenaConexion);
+            using var connection = new SQLiteConnection(cadenaDeConexion);
             try
             {
                 connection.Open();
@@ -172,7 +176,7 @@ namespace EspacioRepositorios
         public Tablero ModificarTablero(Tablero T)
         {
             
-           using(var connection = new SQLiteConnection(cadenaConexion))
+           using(var connection = new SQLiteConnection(cadenaDeConexion))
            {
                 try{
                     connection.Open();

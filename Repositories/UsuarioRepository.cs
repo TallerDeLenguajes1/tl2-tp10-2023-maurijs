@@ -5,11 +5,17 @@ namespace EspacioRepositorios
     public class UsuarioRepository : IUsuarioRepository
     {
         //La direccion de conexion debe estar en settings json
-        private readonly string cadenaConexion = "Data Source=DB/kanban.sql;Cache=Shared";
+        private readonly string cadenaDeConexion;
+
+        //Inyeccion de dependencias (cadenaDeConexion esta declarado en Program.cs y toma su valor en appsettings.json)
+        public UsuarioRepository(string cadenaDeConexion)
+        {
+            this.cadenaDeConexion = cadenaDeConexion;
+        }
         public Usuario CrearUsuario(Usuario user)
         {
             var query = "INSERT INTO Usuario (nombre_usuario, contrasenia, rol) VALUES (@nombre, @contrasenia, @rol)";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
             {
                 try{
                     connection.Open();
@@ -34,7 +40,7 @@ namespace EspacioRepositorios
         {
             List<Usuario> usuarios = new List<Usuario>();
             string queryString = "SELECT id, nombre_usuario FROM Usuario;";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
             {
                 try{
                     connection.Open();
@@ -65,7 +71,7 @@ namespace EspacioRepositorios
         }
         public Usuario ModificarUsuario(Usuario user)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
             {
                 try{
                     connection.Open();
@@ -90,7 +96,7 @@ namespace EspacioRepositorios
         public Usuario GetUsuarioById(int idUsuario)
         {
             var usuario = new Usuario();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion)){
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion)){
                 try{
                     connection.Open();
                     using SQLiteCommand command = connection.CreateCommand();
@@ -119,7 +125,7 @@ namespace EspacioRepositorios
         public int EliminarUsuario(int id)
         {
             int filasAfectadas = 0;
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion)){
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion)){
                 try
                 {
                     connection.Open();
@@ -141,7 +147,7 @@ namespace EspacioRepositorios
         public Usuario GetUsuarioByPassAndName(string nombre, string contrasenia)
         {
             var usuario = new Usuario();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion)){
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion)){
                 try{
                     connection.Open();
                     using SQLiteCommand command = connection.CreateCommand();

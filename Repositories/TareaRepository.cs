@@ -4,12 +4,18 @@ namespace EspacioRepositorios
 {
     public class TareaRepository : ITareaRepository
     {
-        private readonly string cadenaConexion = "Data Source=DB/kanban.sql;Cache=Shared";
+        private readonly string cadenaDeConexion;
+
+        //Inyeccion de dependencias (cadenaDeConexion esta declarado en Program.cs y toma su valor en appsettings.json)
+        public TareaRepository(string cadenaDeConexion)
+        {
+            this.cadenaDeConexion = cadenaDeConexion;
+        }
 
         public Tarea CrearTarea(Tarea tarea)
         {
             var query = $"INSERT INTO Tarea (id_tablero, nombre, estado, descripcion, color, id_usuario_asignado) VALUES (@id_tablero, @nombre, @estado, @descripcion, @color, @id_usuario_asignado)";
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
             {
                 try{ 
                     connection.Open();
@@ -44,7 +50,7 @@ namespace EspacioRepositorios
         public int EliminarTarea(int idTarea)
         {
             int filasAfectadas = 0;
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
             {
                 try
                 {
@@ -75,7 +81,7 @@ namespace EspacioRepositorios
         public Tarea GetTareaById(int id)
         {
             var tarea = new Tarea();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
             {
                 try{
                     connection.Open();
@@ -110,7 +116,7 @@ namespace EspacioRepositorios
         public List<Tarea> GetAllTareasDeTablero(int idTablero)
         {
             var listaTareas = new List<Tarea>();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
             {
                 try
                 {
@@ -149,7 +155,7 @@ namespace EspacioRepositorios
         public List<Tarea> GetAllTareasDeUsuario(int idUsuario)
         {
             var listaTareas = new List<Tarea>();
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion)){
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion)){
                 try
                 {
                     connection.Open();
@@ -188,7 +194,7 @@ namespace EspacioRepositorios
 
         public Tarea ModificarTarea(Tarea tarea)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion)){
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion)){
                 
                 try
                 {
@@ -218,7 +224,7 @@ namespace EspacioRepositorios
         public int AsignarUsuarioATarea(int idUsuario, int idTarea)
         {
             int filasAfectadas = 0;
-            using (SQLiteConnection connection = new SQLiteConnection(cadenaConexion))
+            using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
             {
                 try
                 {
@@ -244,7 +250,7 @@ namespace EspacioRepositorios
         public List<Tarea> GetAllTareas()
         {
             var listaTareas = new List<Tarea>();
-            using var connection = new SQLiteConnection(cadenaConexion);
+            using var connection = new SQLiteConnection(cadenaDeConexion);
             try
             {
                 connection.Open();
