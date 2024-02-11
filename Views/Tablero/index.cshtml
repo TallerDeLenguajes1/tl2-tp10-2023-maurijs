@@ -11,24 +11,32 @@
     <thead>
         <tr>
             <th hidden>ID</th>
-            <th>IdUsuarioPropietario</th>
+            <th hidden>IdUsuarioPropietario</th>
             <th>Nombre</th>
             <th>Descripcion</th>
+            <th >Propietario</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
+        @{int idUsuarioLogueado = Convert.ToInt32(ViewContext.HttpContext.Session.GetString("Id"));} 
         @foreach (var tablero in Model) // puedo usar tableros o Model
         {
             <tr>
                 <td hidden>@tablero.Id</td>
-                <td>@tablero.IdUsuarioPropietario</td>
+                <td hidden>@tablero.IdUsuarioPropietario</td>
                 <td>@tablero.Nombre</td>
                 <td>@tablero.Descripcion</td>
-                <td>
-                    <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tablero.Id">Editar</a>
-                    <a asp-controller="Tablero" asp-action="DeleteTablero" asp-route-idTablero="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
-                </td>
+                @if(idUsuarioLogueado == tablero.IdUsuarioPropietario){
+                    <td>Si</td>
+                    <td>
+                        <a asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tablero.Id">Editar</a>
+                        <a asp-controller="Tablero" asp-action="DeleteTablero" asp-route-idTablero="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+                    </td>
+                } else {
+                    <td>No</td>
+                    <td></td>
+                }
             </tr>
         }
     </tbody>
