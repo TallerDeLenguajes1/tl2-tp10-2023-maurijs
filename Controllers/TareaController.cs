@@ -19,7 +19,7 @@ public class TareaController : Controller
 
     //Muestra Usuarios
     public IActionResult Index(){
-        if(!IsLogged()) return RedirectToRoute(new { controller = "Login", action = "Index"});
+        if(!IsLogged()) return RedirectToAction("Index", "Login");
         var listaTareas = new List<Tarea>();
         try{
             if (IsAdmin())
@@ -27,7 +27,7 @@ public class TareaController : Controller
                 listaTareas = tareaRepository.GetAllTareas();
             }
             else{
-                //No es admin
+                //Tareas solo de ese usuario
                 var idUsuario = Convert.ToInt32(HttpContext.Session.GetString("Id"));
                 listaTareas = tareaRepository.GetAllTareasDeUsuario(idUsuario);
             }
@@ -127,7 +127,7 @@ public class TareaController : Controller
     }
     private bool IsLogged()
     {
-        if (HttpContext.Session != null && !string.IsNullOrEmpty(HttpContext.Session.GetString("Nombre")) ) return true;
+        if (HttpContext.Session != null && !string.IsNullOrEmpty(HttpContext.Session.GetString("Nombre"))) return true;
         return false;
     }
 

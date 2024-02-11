@@ -159,7 +159,7 @@ namespace EspacioRepositorios
                     connection.Open();
                     using (SQLiteCommand commando = connection.CreateCommand()) {
                         commando.CommandText = "SELECT id_tarea, nombre, estado, descripcion, color, id_usuario_asignado, id_tablero FROM Tarea INNER JOIN Usuario ON Tarea.id_usuario_asignado=Usuario.id WHERE Usuario.id = @idUsuario;";
-                        commando.Parameters.Add(new SQLiteParameter("@idTablero", idUsuario));
+                        commando.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
                         using(SQLiteDataReader reader = commando.ExecuteReader())
                         {
                             while (reader.Read()) {
