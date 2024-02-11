@@ -10,11 +10,13 @@ public class TableroController : Controller
     private readonly ILogger<TableroController> _logger;
 
     private readonly ITableroRepository tableroRepository;
+    private readonly ITareaRepository tareaRepository;
 
-    public TableroController(ILogger<TableroController> logger, ITableroRepository tableroRepository)
+    public TableroController(ILogger<TableroController> logger, ITableroRepository tableroRepository, ITareaRepository tareaRepository)
     {
         _logger = logger;
         this.tableroRepository = tableroRepository;
+        this.tareaRepository = tareaRepository;
     }
 
    public IActionResult Index(){
@@ -26,7 +28,18 @@ public class TableroController : Controller
         } else{
             //No es admin
             var idUsuario = Convert.ToInt32(HttpContext.Session.GetString("Id"));
+            // Tableros que sean propiedad del usuario logueado
             listaTableros = tableroRepository.GetAllTablerosDeUsuario(idUsuario);
+            var tareas = tareaRepository.GetAllTareasDeUsuario(idUsuario);
+            // Si un tablero posee una tarea del usuario logueado (por mas que no sea el propietario) debe mostrarse en el index
+            foreach (var tarea in tareas)
+            {
+                var tablero = tableroRepository.GetTableroById(tarea.IdTablero);
+                if (!listaTableros.Contains(tablero))
+                {
+                    listaTableros.Add(tablero);
+                }
+            } 
         }
         return View(TableroViewModel.ToViewModel(listaTableros));
     }
