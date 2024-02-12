@@ -41,21 +41,23 @@ public class TableroController : Controller
                 }
             } 
         }
-        return View(TableroViewModel.ToViewModel(listaTableros));
+        return View(GetTableroViewModel.ToViewModel(listaTableros));
     }
 
     [HttpGet]
-    public IActionResult AgregarTablero(){ //Si agrego parametros envia un bad request
+    public IActionResult AgregarTablero(int idUsuarioLogueado){ //Si agrego parametros envia un bad request
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        if(!IsAdmin()) return RedirectToAction("Index");
-        return View(new TableroViewModel()); 
+        var tableroVM = new GetTableroViewModel
+        {
+            IdUsuarioPropietario = idUsuarioLogueado
+        };
+        return View(tableroVM); 
     }
 
     [HttpPost]
-    public IActionResult AgregarTableroFromForm(TableroViewModel tableroVM){
+    public IActionResult AgregarTableroFromForm(GetTableroViewModel tableroVM){
         // Si el modelo (TableroVM) no es valido vuelve al index
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        if(!IsAdmin()) return RedirectToAction("Index");
         if(!ModelState.IsValid) return RedirectToAction("Index");
         try{
             //Convierto el tablero view model a Tablero
@@ -75,7 +77,7 @@ public class TableroController : Controller
         if(!IsAdmin()) return RedirectToAction("Index");
         try{
             var tablero = tableroRepository.GetTableroById(idTablero);
-            return View(new TableroViewModel(tablero));
+            return View(new GetTableroViewModel(tablero));
         }  
         catch (Exception ex){
             _logger.LogError($"Error: {ex.ToString}");
@@ -84,7 +86,7 @@ public class TableroController : Controller
     }
 
     [HttpPost]
-    public IActionResult EditarTableroFromForm(TableroViewModel tableroVM){
+    public IActionResult EditarTableroFromForm(GetTableroViewModel tableroVM){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
         try{

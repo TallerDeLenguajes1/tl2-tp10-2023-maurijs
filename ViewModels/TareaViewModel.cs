@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using tp10.Models;
 namespace Tp11.ViewModels;
 
-public class TareaViewModel{
+public class GetTareaViewModel{
     private int id;
     [Required(ErrorMessage = "Este campo es requerido.")]
     public int Id { get => id; set => id = value; }
@@ -26,9 +26,9 @@ public class TareaViewModel{
     [Required(ErrorMessage = "Este campo es requerido.")]
     public int IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
     
-    public TareaViewModel(){}
+    public GetTareaViewModel(){}
 
-    public TareaViewModel(Tarea t)
+    public GetTareaViewModel(Tarea t)
     {
         id = t.Id;
         nombre = t.Nombre;
@@ -40,12 +40,12 @@ public class TareaViewModel{
     }
 
     //Recibe una lista de tareas y crea un lista de TareasViewModel
-    public static List<TareaViewModel> ToViewModel(List<Tarea> listaTareas)
+    public static List<GetTareaViewModel> ToViewModel(List<Tarea> listaTareas)
     {
-        var listaTareaVM = new List<TareaViewModel>();
+        var listaTareaVM = new List<GetTareaViewModel>();
         foreach (var tarea in listaTareas)
         {
-            var TareaVM = new TareaViewModel(tarea);
+            var TareaVM = new GetTareaViewModel(tarea);
             listaTareaVM.Add(TareaVM);
         }
         return listaTareaVM;

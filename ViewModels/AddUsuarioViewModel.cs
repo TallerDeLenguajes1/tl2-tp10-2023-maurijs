@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using tp10.Models;
 namespace Tp11.ViewModels;
 
-public class UsuarioViewModel{
+public class AddUsuarioViewModel{
     private int id;
     [Required(ErrorMessage = "Este campo es requerido.")]
     public int Id { get => id; set => id = value; }   
@@ -16,8 +16,8 @@ public class UsuarioViewModel{
     [Required(ErrorMessage = "Este campo es requerido.")]
     public Rol Rol { get => rol; set => rol = value; }
 
-    public UsuarioViewModel(){}
-    public UsuarioViewModel(Usuario usuario)
+    public AddUsuarioViewModel(){}
+    public AddUsuarioViewModel(Usuario usuario)
     {   
         nombre = usuario.Nombre;
         id = usuario.Id;

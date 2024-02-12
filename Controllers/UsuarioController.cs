@@ -21,18 +21,18 @@ public class UsuarioController : Controller
         //Si no esta loggeado redirecciona al index de login
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         var usuarios = usuarioRepository.GetAll();
-        var usuariosVM = ListarUsuarioViewModel.ToViewModel(usuarios); 
+        var usuariosVM = GetUsuarioViewModel.ToViewModel(usuarios); 
         return View(usuariosVM);
     }
 
     [HttpGet]
     public IActionResult AgregarUsuario(){ //Si agrego parametros envia un bad request
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        return View(new UsuarioViewModel());
+        return View(new AddUsuarioViewModel());
     }
 
     [HttpPost]
-    public IActionResult AgregarUsuarioFromForm(UsuarioViewModel usuarioVM){
+    public IActionResult AgregarUsuarioFromForm(AddUsuarioViewModel usuarioVM){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!ModelState.IsValid) return RedirectToAction("Index");
         try{
@@ -51,11 +51,11 @@ public class UsuarioController : Controller
         if(!IsLogged())return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
         var usuario = usuarioRepository.GetUsuarioById(idUsuario);
-        return View(new UsuarioViewModel(usuario));
+        return View(new AddUsuarioViewModel(usuario));
     }
 
     [HttpPost]
-    public IActionResult EditarUsuarioFromForm(UsuarioViewModel usuarioVM){
+    public IActionResult EditarUsuarioFromForm(AddUsuarioViewModel usuarioVM){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(IsAdmin()) 
         {
@@ -77,7 +77,7 @@ public class UsuarioController : Controller
             //Solo se puede borrar si es administrador o si queres borrar tu propio usuario
             if(IsAdmin())
             {   //La vista requiere un UsuarioViewModel
-                    if(usuarioAEliminar != null) return View(new UsuarioViewModel(usuarioAEliminar));
+                    if(usuarioAEliminar != null) return View(new AddUsuarioViewModel(usuarioAEliminar));
             }  
         }catch(Exception ex){
             _logger.LogError(ex.ToString());
@@ -85,7 +85,7 @@ public class UsuarioController : Controller
         return RedirectToAction("Index");
     }
 
-    public IActionResult EliminarFromFormulario(UsuarioViewModel usuarioVM)
+    public IActionResult EliminarFromFormulario(AddUsuarioViewModel usuarioVM)
     {
         try
         {

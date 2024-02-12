@@ -31,7 +31,7 @@ public class TareaController : Controller
                 var idUsuario = Convert.ToInt32(HttpContext.Session.GetString("Id"));
                 listaTareas = tareaRepository.GetAllTareasDeUsuario(idUsuario);
             }
-            return View(TareaViewModel.ToViewModel(listaTareas));
+            return View(GetTareaViewModel.ToViewModel(listaTareas));
         } 
         catch (Exception ex)
         {
@@ -43,11 +43,11 @@ public class TareaController : Controller
     [HttpGet]
     public IActionResult AgregarTarea(){ //Si agrego parametros envia un bad request
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        return View(new TareaViewModel());
+        return View(new GetTareaViewModel());
     }
 
     [HttpPost]
-    public IActionResult AgregarTareaFromForm(TareaViewModel tareaVM)
+    public IActionResult AgregarTareaFromForm(GetTareaViewModel tareaVM)
     {
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index");
@@ -71,7 +71,7 @@ public class TareaController : Controller
             if(!IsLogged()) return RedirectToAction("Index", "Login");
             var tarea = tareaRepository.GetTareaById(idTarea);
             if(tarea == null) return RedirectToAction("Index");
-            var tareaVM = new TareaViewModel(tarea); 
+            var tareaVM = new GetTareaViewModel(tarea); 
             return View(tareaVM);
         }
         catch (Exception ex) 
@@ -82,7 +82,7 @@ public class TareaController : Controller
     }
 
     [HttpPost]
-    public IActionResult EditarTareaFromForm(TareaViewModel Model){
+    public IActionResult EditarTareaFromForm(GetTareaViewModel Model){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!ModelState.IsValid) return RedirectToAction("Index");
         try

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using tp10.Models;
 namespace Tp11.ViewModels;
 
-public class TableroViewModel{
+public class GetTableroViewModel{
     private int id;
     // atributos de validacion
     [Required(ErrorMessage = "Este campo es requerido.")]  // El campo id es requerido obligatoriamente    
@@ -33,8 +33,8 @@ public class TableroViewModel{
         return tablero;
     }
     
-    public TableroViewModel(){}
-    public TableroViewModel(Tablero t)
+    public GetTableroViewModel(){}
+    public GetTableroViewModel(Tablero t)
     {
         id = t.Id;
         nombre = t.Nombre;
@@ -42,13 +42,13 @@ public class TableroViewModel{
         idUsuarioPropietario = t.IdUsuarioPropietario;
     }
 
-    public static List<TableroViewModel> ToViewModel(List<Tablero> tableros)
+    public static List<GetTableroViewModel> ToViewModel(List<Tablero> tableros)
     {
-        List<TableroViewModel> ListarTableroVM = new List<TableroViewModel>();
+        List<GetTableroViewModel> ListarTableroVM = new List<GetTableroViewModel>();
         
         foreach (var tablero in tableros)
         {
-            var newTVM = new TableroViewModel(tablero);
+            var newTVM = new GetTableroViewModel(tablero);
             ListarTableroVM.Add(newTVM);
         }
         return ListarTableroVM;
