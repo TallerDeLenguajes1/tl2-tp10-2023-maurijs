@@ -3,11 +3,11 @@
 }
 
 @using Tp11.ViewModels
-@model UsuarioViewModel
+@model EliminarUsuarioViewModel
 <h2>Confirmar eliminación</h2>
 
 <form asp-controller="Usuario" asp-action="EliminarFromFormulario">
     <input asp-for="@Model.Id" type="hidden" />
-    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <button type="submit" class="btn btn-danger" asp-route-idUsuario="@Model.Id">Eliminar</button>
 </form>
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

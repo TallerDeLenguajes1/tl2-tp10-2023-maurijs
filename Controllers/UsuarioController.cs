@@ -20,6 +20,7 @@ public class UsuarioController : Controller
     public IActionResult Index(){
         //Si no esta loggeado redirecciona al index de login
         if(!IsLogged()) return RedirectToAction("Index", "Login");
+        if(!IsAdmin()) return RedirectToAction("Index", "Home");
         var usuarios = usuarioRepository.GetAll();
         var usuariosVM = GetUsuarioViewModel.ToViewModel(usuarios); 
         return View(usuariosVM);
@@ -28,12 +29,14 @@ public class UsuarioController : Controller
     [HttpGet]
     public IActionResult AgregarUsuario(){ //Si agrego parametros envia un bad request
         if(!IsLogged()) return RedirectToAction("Index", "Login");
+        if(!IsAdmin()) return RedirectToAction("Index", "Home");
         return View(new AddUsuarioViewModel());
     }
 
     [HttpPost]
     public IActionResult AgregarUsuarioFromForm(AddUsuarioViewModel usuarioVM){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
+        if(!IsAdmin()) return RedirectToAction("Index", "Home");
         if(!ModelState.IsValid) return RedirectToAction("Index");
         try{
             var usuario = usuarioVM.ToModel();
@@ -49,7 +52,7 @@ public class UsuarioController : Controller
     [HttpGet]
     public IActionResult EditarUsuario(int idUsuario){  
         if(!IsLogged())return RedirectToAction("Index", "Login");
-        if(!IsAdmin()) return RedirectToAction("Index");
+        if(!IsAdmin()) return RedirectToAction("Index", "Home");
         var usuario = usuarioRepository.GetUsuarioById(idUsuario);
         return View(new AddUsuarioViewModel(usuario));
     }
@@ -57,14 +60,12 @@ public class UsuarioController : Controller
     [HttpPost]
     public IActionResult EditarUsuarioFromForm(AddUsuarioViewModel usuarioVM){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        if(IsAdmin()) 
-        {
-            try{
-                var usuario = usuarioVM.ToModel();
-                usuarioRepository.ModificarUsuario(usuario); 
-            } catch(Exception ex){
-                _logger.LogError(ex.ToString());
-            }
+        if(!IsAdmin()) return RedirectToAction("Index", "Home");
+        try{
+            var usuario = usuarioVM.ToModel();
+            usuarioRepository.ModificarUsuario(usuario); 
+        } catch(Exception ex){
+            _logger.LogError(ex.ToString());
         }
         return RedirectToAction("Index");
     }
@@ -73,25 +74,27 @@ public class UsuarioController : Controller
         try{
         //Si no esta logueado debe loguearse
             if(!IsLogged()) return RedirectToAction("Index", "Login");
+            //Solo se puede borrar si es administrador
+            if(!IsAdmin()) return RedirectToAction("Index", "Home");
+
             var usuarioAEliminar = usuarioRepository.GetUsuarioById(idUsuario);
-            //Solo se puede borrar si es administrador o si queres borrar tu propio usuario
-            if(IsAdmin())
-            {   //La vista requiere un UsuarioViewModel
-                    if(usuarioAEliminar != null) return View(new AddUsuarioViewModel(usuarioAEliminar));
-            }  
+            if(usuarioAEliminar != null) return View(new EliminarUsuarioViewModel(idUsuario));
+            
         }catch(Exception ex){
             _logger.LogError(ex.ToString());
         }
         return RedirectToAction("Index");
     }
 
-    public IActionResult EliminarFromFormulario(AddUsuarioViewModel usuarioVM)
+    public IActionResult EliminarFromFormulario(int idUsuario)
     {
         try
         {
-            if(!IsLogged()) return RedirectToAction("Index", "Login"); 
+            if(!IsLogged()) return RedirectToAction("Index", "Login");  
+            if(!IsAdmin()) return RedirectToAction("Index", "Home");  
             //Si no es admin o si el usuario que quiere eliminar no es el mismo entonces sale
-            usuarioRepository.EliminarUsuario(usuarioVM.Id);
+            usuarioRepository.EliminarUsuario(idUsuario);
+            return RedirectToAction("Index"); 
         }
         catch (Exception ex)
         {

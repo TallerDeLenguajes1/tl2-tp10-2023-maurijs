@@ -24,15 +24,22 @@
                         </li>
                         <li class="nav-item">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuario</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Tablero" asp-action="Index">Tablero</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Tarea" asp-action="Index">Tarea</a>
                         </li>
+
+                        @if(ViewContext.HttpContext.Session.GetString("Rol") == "administrador")
+                        { //Solo el admin puede ver y editar la lista de usuarios
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuario</a>
+                            </li>
+                        }
                     </ul>
+                        <button class="btn btn-danger">
+                            <a asp-controller="Login" asp-action="Desloguear" class="text-white">Cerrar sesion</a>
+                        </button>
                 </div>
             </div>
         </nav>
