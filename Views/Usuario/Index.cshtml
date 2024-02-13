@@ -7,8 +7,8 @@
 
 <h2>Lista Usuarios</h2>
 
-<table class="table table-dark">
-    <thead>
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
         <tr>
             <th hidden>ID</th>
             <th>Nombre</th>
@@ -22,16 +22,16 @@
                 <td hidden>@usuario.Id</td>
                 <td>@usuario.Nombre</td>
                 <td>
-                    <a asp-controller="Usuario" asp-action="EditarUsuario" asp-route-idUsuario="@usuario.Id">Editar</a>
-                    <a asp-controller="Usuario" asp-action="EliminarUsuario" asp-route-idUsuario="@usuario.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+                    <a class="btn btn-primary" asp-controller="Usuario" asp-action="EditarUsuario" asp-route-idUsuario="@usuario.Id">Editar</a>
+                    <a class="btn btn-danger" asp-controller="Usuario" asp-action="EliminarUsuario" asp-route-idUsuario="@usuario.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
                 </td>
             </tr>
         }
     </tbody>
     <tfoot>
-        <tr>
-            <a asp-controller="Usuario" asp-action="AgregarUsuario">Agregar Usuario</a>
-        </tr>
+        <td colspan="4">
+            <a class="btn btn-success" asp-controller="Usuario" asp-action="AgregarUsuario">Agregar Usuario</a>
+        </td>
     </tfoot>
 </table>
 
