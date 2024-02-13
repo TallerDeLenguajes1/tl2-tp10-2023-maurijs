@@ -15,7 +15,7 @@
 
 <table class="table table-striped table-bordered">
     <thead class="thead-dark">
-        <th colspan="7" class="text-center">@(isAdmin ? "Todas las tareas": "Tareas que me asignaron")</th>
+       <th colspan="7" class="text-center display-5 text-primary font-weight-bold">@{ string titulo = isAdmin ? "Todas las tareas" : "Mis tareas asignadas"; } @titulo</th>
         <tr>
             <th hidden>ID</th>
             <th>IdTablero</th>
@@ -57,7 +57,7 @@
             }
             if(!isAdmin)
             {
-            <th colspan="7" class="text-center">Tareas de mis tableros</th>
+            <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Tareas de mis tableros</th>
             @foreach (var tarea in Model.TareasFromTablerosDelUsuario)
             {
                 <tr>
@@ -71,8 +71,11 @@
                     <td>
                         @if(idUsuarioLogueado == tarea.IdUsuarioAsignado)
                         {
-                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="EditarTarea" asp-route-idTarea="@tarea.Id">Actualizar</a>
-                        } else {
+                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">Actualizar Estado</a>
+                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Reasignar</a>
+                        } else if(tarea.IdUsuarioAsignado!=0){
+                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Reasignar</a>
+                        } else{
                             <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Asignar</a>
                         }
                     </td>
