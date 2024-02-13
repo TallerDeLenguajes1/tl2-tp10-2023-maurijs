@@ -23,14 +23,15 @@
             <th>Estado</th>
             <th>Descripcion</th>
             <th>Color</th>
-            <th>IdUsuarioAsignado</th>
+            <th hidden>IdUsuarioAsignado</th>
+            <th >Usuario Asignado</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @{ List<GetTareaViewModel> tareas;
             if(isAdmin) {
-             tareas = Model.TodasLastareas;
+             tareas = Model.TodasLasTareas;
             } else  { 
                 tareas = Model.TareasAsignadasAlUsuario;
             }
@@ -43,7 +44,9 @@
                     <td>@((int)tarea.Estado)</td>
                     <td>@tarea.Descripcion</td>
                     <td>@tarea.Color</td>
-                    <td>@tarea.IdUsuarioAsignado</td>
+                    <td hidden>@tarea.IdUsuarioAsignado</td>
+                    <td >@(tarea.NombreUsuarioAsignado != null ? tarea.NombreUsuarioAsignado : "Sin Asignar") </td>
+
                     <td>
                         @if(isAdmin)
                         {
@@ -67,7 +70,9 @@
                     <td>@((int)tarea.Estado)</td>
                     <td>@tarea.Descripcion</td>
                     <td>@tarea.Color</td>
-                    <td>@tarea.IdUsuarioAsignado</td>
+                    <td hidden>@tarea.IdUsuarioAsignado</td>
+                    <td >@(tarea.NombreUsuarioAsignado != null ? tarea.NombreUsuarioAsignado : "Sin Asignar") </td>
+
                     <td>
                         @if(idUsuarioLogueado == tarea.IdUsuarioAsignado)
                         {

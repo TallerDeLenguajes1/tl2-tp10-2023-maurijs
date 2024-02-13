@@ -5,6 +5,7 @@ namespace Tp11.ViewModels;
 
 public class AddTableroViewModel{
 
+    [Required(ErrorMessage = "Este campo es requerido.")]
     private int idUsuarioPropietario;
     [Required(ErrorMessage = "Este campo es requerido.")]
 

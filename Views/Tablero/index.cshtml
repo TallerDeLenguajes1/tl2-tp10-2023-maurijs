@@ -16,10 +16,10 @@
         <tr> 
             @if(isAdmin)
             {
-                <th colspan="5">Todos los tableros</th>
+                <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Todos los tableros</th>
             } else
             {
-                <th colspan="5">Mis tableros / Tableros con tareas</th>
+                <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Mis tableros / Tableros con tareas asignadas</th>
             }
         </tr>
         <tr>
@@ -54,7 +54,7 @@
     </tbody>
     <tfoot>
         <td colspan="4">
-                <a class="btn btn-success" asp-controller="Tablero" asp-action="AgregarTablero" asp-route-id="@idUsuarioLogueado">Agregar Tablero</a>
+                <a class="btn btn-success" asp-controller="Tablero" asp-action="AgregarTablero">Agregar Tablero</a>
         </td>
     </tfoot>
 </table>

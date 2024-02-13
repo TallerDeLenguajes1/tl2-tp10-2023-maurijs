@@ -27,6 +27,15 @@
         <label asp-for="@Model.Color">Color</label>
         <input asp-for="@Model.Color" class="form-control" id="color" />
     </div>
+    <div class="form-group">
+        <label asp-for="@Model.IdUsuarioAsignado">Asignar a usuario:</label>
+        <select asp-for="@Model.IdUsuarioAsignado" class="form-select" id="idTablero">
+            @foreach(var usuario in Model.usuariosParaAsignar) { // La tarea pertenecera a algun tablero del usuario
+                <option value="@usuario.Id">@usuario.Nombre</option>
+            }
+            <option value="0">Sin Asignar</option>
+        </select>
+    </div>
     <button type="submit" class="btn btn-primary">Enviar</button>
 </form>
 

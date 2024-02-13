@@ -28,28 +28,31 @@ public class TareaController : Controller
         if(!IsLogged()) return RedirectToAction("Index", "Login");
 
         var listaTareas = new List<Tarea>();
-        var tareasViewModel = new GetTareasViewModel();
+        var GetTareasViewModel = new GetTareasViewModel(usuarioRepository);
 
         try{
             if (IsAdmin())
             {
                 listaTareas = tareaRepository.GetAllTareas();
-                tareasViewModel.TodasLastareas = GetTareasViewModel.ToViewModel(listaTareas); 
+                GetTareasViewModel.TodasLasTareas = GetTareasViewModel.ToViewModel(listaTareas); 
+                GetTareasViewModel.IsAdmin = true;
+
             }else {
+                GetTareasViewModel.IsAdmin = false; 
                 //Tareas asignadas al usuario
                 listaTareas = tareaRepository.GetAllTareasDeUsuario(IdUsuarioLogueado);
-                tareasViewModel.TareasAsignadasAlUsuario = GetTareasViewModel.ToViewModel(listaTareas); 
+                GetTareasViewModel.TareasAsignadasAlUsuario = GetTareasViewModel.ToViewModel(listaTareas); 
 
                 //Tareas pertenecientes a sus tableros (pueden o no estar asignadas a el mismo)
                 var tareasDeSusTableros = tareaRepository.GetTareasFromTableros(IdUsuarioLogueado);
-                tareasViewModel.TareasFromTablerosDelUsuario = GetTareasViewModel.ToViewModel(tareasDeSusTableros); 
-                
+                GetTareasViewModel.TareasFromTablerosDelUsuario = GetTareasViewModel.ToViewModel(tareasDeSusTableros); 
             }
-            return View(tareasViewModel);
+            GetTareasViewModel.GetNombresDeUsuario();
+            return View(GetTareasViewModel);
         } 
         catch (Exception ex)
         {
-            _logger.LogError($"Error: {ex.ToString}");
+            _logger.LogError($"Error: {ex.ToString()}");
         }
         return RedirectToAction("Index");
     }
@@ -58,10 +61,10 @@ public class TareaController : Controller
     [HttpGet]
     public IActionResult AgregarTarea(){ //Si agrego parametros envia un bad request
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        var Disponibles = tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado);
         var addTareaVM = new AddTareaViewModel
         {
-            tablerosDisponibles = Disponibles
+            tablerosDisponibles =  tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado),
+            usuariosParaAsignar = usuarioRepository.GetAll()
         };
         return View(addTareaVM);
     }

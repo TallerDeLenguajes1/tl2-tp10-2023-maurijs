@@ -6,6 +6,7 @@ namespace Tp11.ViewModels;
 public class AddTareaViewModel{
 
     public List<Tablero> tablerosDisponibles {get; set;}
+    public List<Usuario> usuariosParaAsignar {get; set;}
     private int idTablero;
     [Required(ErrorMessage = "Este campo es requerido.")]
     public int IdTablero { get => idTablero; set => idTablero = value; }
@@ -18,10 +19,9 @@ public class AddTareaViewModel{
     private string color;
     [Required(ErrorMessage = "Este campo es requerido.")]
     public string Color { get => color; set => color = value; }
-    /*private int idUsuarioAsignado;
+    
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public int IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
-    */
+    public int IdUsuarioAsignado {get; set;}
     public AddTareaViewModel(){}
 
     public AddTareaViewModel(Tarea t)

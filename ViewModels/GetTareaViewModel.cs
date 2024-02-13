@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using EspacioRepositorios;
 using tp10.Models;
 namespace Tp11.ViewModels;
 
@@ -19,7 +20,8 @@ public class GetTareaViewModel{
     public string Color{ get; set; }
     [Required(ErrorMessage = "Este campo es requerido.")]
     public int IdUsuarioAsignado { get; set; }
-    
+    [Required(ErrorMessage = "Este campo es requerido.")]
+    public string NombreUsuarioAsignado {get;set;}
     
     public GetTareaViewModel(){}
 
@@ -54,10 +56,17 @@ public class GetTareaViewModel{
 
 public class GetTareasViewModel
 {
+    private readonly IUsuarioRepository _usuarioRepository;
+    public bool IsAdmin {get;set;}
     public List<GetTareaViewModel> TareasAsignadasAlUsuario {get; set;}
     public List<GetTareaViewModel> TareasFromTablerosDelUsuario{get; set;}
-    public List<GetTareaViewModel> TodasLastareas{get; set;}
+    public List<GetTareaViewModel> TodasLasTareas{get; set;}
     //Recibe una lista de tareas y crea un lista de TareasViewModel
+
+    public GetTareasViewModel(IUsuarioRepository usuarioRepository)
+    {
+        _usuarioRepository = usuarioRepository;
+    }
     public static List<GetTareaViewModel> ToViewModel(List<Tarea> listaTareas)
     {
         var listaTareaVM = new List<GetTareaViewModel>();
@@ -68,5 +77,44 @@ public class GetTareasViewModel
         }
         return listaTareaVM;
     }
+    public void GetNombresDeUsuario()
+    {
+        var usuarios = _usuarioRepository.GetAll();
+        //Solo si es admin se mostraran todas las tareas tareas
+        if (IsAdmin)
+        {   
+            if (TodasLasTareas != null)
+            {
+                foreach (var tarea in TodasLasTareas)
+                {
+                    var nombre = usuarios.FirstOrDefault(u => u.Id == tarea.IdUsuarioAsignado).Nombre;
+                    tarea.NombreUsuarioAsignado = nombre;
+                }
+            }    
+        } else {
+            if(TareasAsignadasAlUsuario != null)
+            {
+                foreach (var tarea in TareasAsignadasAlUsuario)
+                {
+                    var nombre = usuarios.FirstOrDefault(u => u.Id == tarea.IdUsuarioAsignado).Nombre;
+                    tarea.NombreUsuarioAsignado = nombre ?? "Sin asignar";
+                }
+            }
 
+            if(TareasFromTablerosDelUsuario != null)
+            {
+                foreach (var tarea in TareasFromTablerosDelUsuario)
+                {
+                    foreach (var u in usuarios)
+                    {
+                        if (u.Id == tarea.IdUsuarioAsignado)
+                        {
+                            tarea.NombreUsuarioAsignado = u.Nombre;
+                            break;
+                        }
+                    }
+                } 
+            }
+        }
+    }
 }

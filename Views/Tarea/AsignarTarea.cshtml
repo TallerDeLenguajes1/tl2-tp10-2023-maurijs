@@ -13,6 +13,7 @@
             @foreach(var usuario in Model.usuarios) { // La tarea pertenecera a algun tablero del usuario
                 <option value="@usuario.Id">@usuario.Nombre</option>
             }
+            <option value="0">Sin Asignar</option>
         </select>
     </div>
     <button type="submit" class="btn btn-primary">Enviar</button>

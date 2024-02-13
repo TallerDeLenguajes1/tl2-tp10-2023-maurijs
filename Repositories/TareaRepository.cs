@@ -291,7 +291,7 @@ namespace EspacioRepositorios
             {
                 connection.Open();
                 using var command = connection.CreateCommand();
-                command.CommandText = "SELECT t.id_tarea, t.nombre, estado, t.descripcion, color, id_usuario_asignado, t.id_tablero FROM Tarea t INNER JOIN Tablero USING(id_tablero) WHERE id_usuario_propietario = @idUsuario";
+                command.CommandText = "SELECT t.id_tarea, t.nombre, estado, t.descripcion, color, id_usuario_asignado, t.id_tablero FROM Tarea t INNER JOIN Tablero USING(id_tablero) WHERE id_usuario_propietario = @idUsuario;";
                 command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
                 command.ExecuteNonQuery();
                 using (SQLiteDataReader reader = command.ExecuteReader())

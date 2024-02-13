@@ -11,12 +11,15 @@ public class TableroController : Controller
 
     private readonly ITableroRepository tableroRepository;
     private readonly ITareaRepository tareaRepository;
+    private readonly IUsuarioRepository usuarioRepository;
+    private int IdUsuarioLogueado => Convert.ToInt32(HttpContext.Session.GetString("Id"));
 
-    public TableroController(ILogger<TableroController> logger, ITableroRepository tableroRepository, ITareaRepository tareaRepository)
+    public TableroController(ILogger<TableroController> logger, ITableroRepository tableroRepository, ITareaRepository tareaRepository,IUsuarioRepository usuarioRepository)
     {
         _logger = logger;
         this.tableroRepository = tableroRepository;
         this.tareaRepository = tareaRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
    public IActionResult Index(){
@@ -45,11 +48,11 @@ public class TableroController : Controller
     }
 
     [HttpGet]
-    public IActionResult AgregarTablero(int idUsuarioLogueado){ //Si agrego parametros envia un bad request
+    public IActionResult AgregarTablero(){ //Si agrego parametros envia un bad request
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        var tableroVM = new GetTableroViewModel
+        var tableroVM = new AddTableroViewModel
         {
-            IdUsuarioPropietario = idUsuarioLogueado
+            IdUsuarioPropietario = IdUsuarioLogueado,
         };
         return View(tableroVM); 
     }
