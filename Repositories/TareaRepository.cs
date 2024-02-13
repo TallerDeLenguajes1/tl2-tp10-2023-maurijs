@@ -283,5 +283,44 @@ namespace EspacioRepositorios
             return listaTareas;
         }
 
+        public List<Tarea> GetTareasFromTableros(int idUsuario)
+        {
+            var listaTareas = new List<Tarea>();
+            using var connection = new SQLiteConnection(cadenaDeConexion);
+            try
+            {
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandText = "SELECT t.id_tarea, t.nombre, estado, t.descripcion, color, id_usuario_asignado, t.id_tablero FROM Tarea t INNER JOIN Tablero USING(id_tablero) WHERE id_usuario_propietario = @idUsuario";
+                command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
+                command.ExecuteNonQuery();
+                using (SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var tarea = new Tarea
+                        {
+                            Id = Convert.ToInt32(reader["id_tarea"]),
+                            IdTablero = Convert.ToInt32(reader["id_tablero"]),
+                            Nombre = reader["nombre"].ToString(),
+                            Color = reader["color"].ToString(),
+                            Estado = (EstadoTarea)Convert.ToInt32(reader["estado"]),
+                            Descripcion = reader["descripcion"].ToString(),
+                            IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]),
+                        };
+                        listaTareas.Add(tarea);
+                    }
+                }
+
+            }
+            catch {
+                throw;
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return listaTareas;
+        }
     }
 }

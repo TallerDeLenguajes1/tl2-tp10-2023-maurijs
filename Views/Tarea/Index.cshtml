@@ -3,12 +3,19 @@
 }
 
 @using Tp11.ViewModels
-@model List<GetTareaViewModel>
+@model GetTareasViewModel
 
 <h2>Lista de tareas</h2>
 
+@{
+    bool isAdmin = (ViewContext.HttpContext.Session.GetString("Rol") == "administrador");
+    int idUsuarioLogueado = Convert.ToInt32(ViewContext.HttpContext.Session.GetString("Id"));
+}
+
+
 <table class="table table-striped table-bordered">
     <thead class="thead-dark">
+        <th colspan="7" class="text-center">@(isAdmin ? "Todas las tareas": "Tareas que me asignaron")</th>
         <tr>
             <th hidden>ID</th>
             <th>IdTablero</th>
@@ -21,21 +28,58 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var tarea in Model)
-        {
-            <tr>
-                <td hidden>@tarea.Id</td>
-                <td>@tarea.IdTablero</td>
-                <td>@tarea.Nombre</td>
-                <td>@((int)tarea.Estado)</td>
-                <td>@tarea.Descripcion</td>
-                <td>@tarea.Color</td>
-                <td>@tarea.IdUsuarioAsignado</td>
-                <td>
-                    <a class="btn btn-primary" asp-controller="Tarea" asp-action="EditarTarea" asp-route-idTarea="@tarea.Id">Editar</a>
-                    <a class="btn btn-danger"  asp-controller="Tarea" asp-action="DeleteTarea" asp-route-idTarea="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
-                </td>
-            </tr>
+        @{ List<GetTareaViewModel> tareas;
+            if(isAdmin) {
+             tareas = Model.TodasLastareas;
+            } else  { 
+                tareas = Model.TareasAsignadasAlUsuario;
+            }
+            @foreach (var tarea in tareas)
+            {
+                <tr>
+                    <td hidden>@tarea.Id</td>
+                    <td>@tarea.IdTablero</td>
+                    <td>@tarea.Nombre</td>
+                    <td>@((int)tarea.Estado)</td>
+                    <td>@tarea.Descripcion</td>
+                    <td>@tarea.Color</td>
+                    <td>@tarea.IdUsuarioAsignado</td>
+                    <td>
+                        @if(isAdmin)
+                        {
+                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">Editar</a>
+                            <a class="btn btn-danger"  asp-controller="Tarea" asp-action="DeleteTarea" asp-route-idTarea="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+                        }else {
+                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">Actualizar Estado</a>
+                        }
+                    </td>
+                </tr>
+            }
+            if(!isAdmin)
+            {
+            <th colspan="7" class="text-center">Tareas de mis tableros</th>
+            @foreach (var tarea in Model.TareasFromTablerosDelUsuario)
+            {
+                <tr>
+                    <td hidden>@tarea.Id</td>
+                    <td>@tarea.IdTablero</td>
+                    <td>@tarea.Nombre</td>
+                    <td>@((int)tarea.Estado)</td>
+                    <td>@tarea.Descripcion</td>
+                    <td>@tarea.Color</td>
+                    <td>@tarea.IdUsuarioAsignado</td>
+                    <td>
+                        @if(idUsuarioLogueado == tarea.IdUsuarioAsignado)
+                        {
+                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="EditarTarea" asp-route-idTarea="@tarea.Id">Actualizar</a>
+                        } else {
+                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Asignar</a>
+                        }
+                    </td>
+                </tr>
+            }
+
+            }
         }
     </tbody>
     <tfoot>

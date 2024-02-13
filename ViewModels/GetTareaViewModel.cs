@@ -4,41 +4,59 @@ using tp10.Models;
 namespace Tp11.ViewModels;
 
 public class GetTareaViewModel{
-    private int id;
+
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public int Id { get => id; set => id = value; }
-    private int idTablero;
+    public int Id { get; set; }
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public int IdTablero { get => idTablero; set => idTablero = value; }
-    private string nombre;
+    public int IdTablero { get; set; }
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public string Nombre { get => nombre; set => nombre = value; }
-    private EstadoTarea estado;
+    public string Nombre { get; set; }
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public EstadoTarea Estado { get => estado; set => estado = value; }
-    private string descripcion;
+    public EstadoTarea Estado { get; set; }
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public string Descripcion { get => descripcion; set => descripcion = value; }
-    private string color;
+    public string Descripcion { get; set; }
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public string Color { get => color; set => color = value; }
-    private int idUsuarioAsignado;
+    public string Color{ get; set; }
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public int IdUsuarioAsignado { get => idUsuarioAsignado; set => idUsuarioAsignado = value; }
+    public int IdUsuarioAsignado { get; set; }
+    
     
     public GetTareaViewModel(){}
 
     public GetTareaViewModel(Tarea t)
     {
-        id = t.Id;
-        nombre = t.Nombre;
-        descripcion = t.Descripcion;
-        color = t.Color;
-        idUsuarioAsignado = t.IdUsuarioAsignado;
-        idTablero = t.IdTablero;
-        estado = t.Estado;
+        Id = t.Id;
+        Nombre = t.Nombre;
+        Descripcion = t.Descripcion;
+        Color = t.Color;
+        IdUsuarioAsignado = t.IdUsuarioAsignado;
+        IdTablero = t.IdTablero;
+        Estado = t.Estado;
     }
 
+
+    // Devuelve su modelo correspondiente
+    public Tarea ToModel()
+    {
+        var tarea = new Tarea
+        {
+            Nombre = Nombre,
+            Descripcion = Descripcion,
+            Id = Id,
+            IdTablero = IdTablero,
+            Color = Color,
+            Estado = Estado, 
+            IdUsuarioAsignado = IdUsuarioAsignado
+        };
+        return tarea;
+    }
+}
+
+public class GetTareasViewModel
+{
+    public List<GetTareaViewModel> TareasAsignadasAlUsuario {get; set;}
+    public List<GetTareaViewModel> TareasFromTablerosDelUsuario{get; set;}
+    public List<GetTareaViewModel> TodasLastareas{get; set;}
     //Recibe una lista de tareas y crea un lista de TareasViewModel
     public static List<GetTareaViewModel> ToViewModel(List<Tarea> listaTareas)
     {
@@ -51,19 +69,4 @@ public class GetTareaViewModel{
         return listaTareaVM;
     }
 
-    // Devuelve su modelo correspondiente
-    public Tarea ToModel()
-    {
-        var tarea = new Tarea
-        {
-            Nombre = nombre,
-            Descripcion = descripcion,
-            Id = id,
-            IdTablero = idTablero,
-            Color = color,
-            Estado = estado, 
-            IdUsuarioAsignado = idUsuarioAsignado
-        };
-        return tarea;
-    }
 }

@@ -4,10 +4,7 @@ using tp10.Models;
 namespace Tp11.ViewModels;
 
 public class AddTableroViewModel{
-    private int id;
-    // atributos de validacion
-    [Required(ErrorMessage = "Este campo es requerido.")]  // El campo id es requerido obligatoriamente    
-    public int Id { get => id; set => id = value; }
+
     private int idUsuarioPropietario;
     [Required(ErrorMessage = "Este campo es requerido.")]
 
@@ -27,7 +24,6 @@ public class AddTableroViewModel{
         {
             Nombre = nombre,
             Descripcion = descripcion,
-            Id = id,
             IdUsuarioPropietario = idUsuarioPropietario 
         };
         return tablero;
@@ -36,7 +32,6 @@ public class AddTableroViewModel{
     public AddTableroViewModel(){}
     public AddTableroViewModel(Tablero t)
     {
-        id = t.Id;
         nombre = t.Nombre;
         descripcion = t.Descripcion;
         idUsuarioPropietario = t.IdUsuarioPropietario;

@@ -55,7 +55,7 @@ public class TableroController : Controller
     }
 
     [HttpPost]
-    public IActionResult AgregarTableroFromForm(GetTableroViewModel tableroVM){
+    public IActionResult AgregarTableroFromForm(AddTableroViewModel tableroVM){
         // Si el modelo (TableroVM) no es valido vuelve al index
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!ModelState.IsValid) return RedirectToAction("Index");

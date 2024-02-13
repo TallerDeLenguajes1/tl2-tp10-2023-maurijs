@@ -5,22 +5,24 @@
 @using Tp11.ViewModels
 @model UpdateTareaViewModel
 
+@{
+    bool isAdmin = (ViewContext.HttpContext.Session.GetString("Rol") == "administrador");
+}
+
+
 <h1>@ViewData["Title"]</h1>
 <form asp-controller="Tarea" asp-action="EditarTareaFromForm" method="post">
     <input hidden asp-for="@Model.Id">
-    <div class="form-group">
+        
+    @if(isAdmin){
+    // Si no es admin solo puede modificar el estado
+    <div hidden class="form-group">
         <label asp-for="@Model.IdTablero">Id tablero</label>
         <input asp-for="@Model.IdTablero" class="form-control" id="idTablero" />
     </div>
     <div class="form-group">
-        <label asp-for="@Model.Nombre">nombre</label>
+        <label asp-for="@Model.Nombre">Nombre</label>
         <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
-    </div>
-    <div class="form-group">
-        <label asp-for="@Model.Estado">Estado</label>
-        <select asp-for="@Model.Estado" asp-items="Html.GetEnumSelectList<EstadoTarea>()" class="form-control">
-            <option value="">Seleccionar Estado</option>
-        </select>
     </div>
     <div class="form-group">
         <label asp-for="@Model.Descripcion">Descripcion</label>
@@ -33,6 +35,20 @@
     <div class="form-group">
         <label asp-for="@Model.IdUsuarioAsignado">Id usuario asignado</label>
         <input asp-for="@Model.IdUsuarioAsignado" class="form-control" id="idUsuarioA" />
+    </div>
+    } else  { // Si no es admin oculto estos campos
+        <input hidden asp-for="@Model.IdTablero">
+        <input hidden asp-for="@Model.Nombre">
+        <input hidden asp-for="@Model.Descripcion">
+        <input hidden asp-for="@Model.Color">
+        <input hidden asp-for="@Model.IdUsuarioAsignado">
+    }
+        
+    <div class="form-group">
+        <label asp-for="@Model.Estado">Estado</label>
+        <select asp-for="@Model.Estado" asp-items="Html.GetEnumSelectList<EstadoTarea>()" class="form-control">
+            <option value="">Seleccionar Estado</option>
+        </select>
     </div>
     <button type="submit" class="btn btn-primary" >Enviar</button>
 </form>

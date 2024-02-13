@@ -1,0 +1,21 @@
+@{ 
+    ViewData["Title"] = "Asignar Tarea";
+}
+
+@using Tp11.ViewModels
+@model AsignarTareaViewModel
+
+<form asp-controller="Tarea" asp-action="AsignarTareaFromForm" method="post">
+    <div class="form-group">
+        <label asp-for="@Model.IdUsuarioAsignado">Asignar a usuario:</label>
+        <select asp-for="@Model.IdUsuarioAsignado" class="form-select" id="idTablero">
+            @foreach(var usuario in Model.usuarios) { // La tarea pertenecera a algun tablero del usuario
+                <option value="@usuario.Id">@usuario.Nombre</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+
+</form>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

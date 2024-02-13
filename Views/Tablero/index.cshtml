@@ -7,12 +7,7 @@
 @model List<GetTableroViewModel> //Especifico q la view espera un obj de ese tipo, q podre usar con Model o con su nombre original
 
 @{
-    bool isAdmin;
-    if(ViewContext.HttpContext.Session.GetString("Rol") == "administrador"){ 
-        isAdmin = true;
-    } else {
-        isAdmin = false;
-    }
+    bool isAdmin = (ViewContext.HttpContext.Session.GetString("Rol") == "administrador");
     int idUsuarioLogueado = Convert.ToInt32(ViewContext.HttpContext.Session.GetString("Id"));
 }
 
