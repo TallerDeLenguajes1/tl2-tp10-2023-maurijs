@@ -87,9 +87,15 @@ public class GetTareasViewModel
             {
                 foreach (var tarea in TodasLasTareas)
                 {
-                    var nombre = usuarios.FirstOrDefault(u => u.Id == tarea.IdUsuarioAsignado).Nombre;
-                    tarea.NombreUsuarioAsignado = nombre;
-                }
+                    foreach (var u in usuarios)
+                    {
+                        if (u.Id == tarea.IdUsuarioAsignado)
+                        {
+                            tarea.NombreUsuarioAsignado = u.Nombre;
+                            break;
+                        }
+                    }
+                } 
             }    
         } else {
             if(TareasAsignadasAlUsuario != null)

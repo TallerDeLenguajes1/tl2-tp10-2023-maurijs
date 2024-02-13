@@ -7,6 +7,7 @@
 
 @{
     bool isAdmin = (ViewContext.HttpContext.Session.GetString("Rol") == "administrador");
+    int idUsuarioLogueado = Convert.ToInt32(ViewContext.HttpContext.Session.GetString("Id"));
 }
 
 
@@ -16,9 +17,13 @@
         
     @if(isAdmin){
     // Si no es admin solo puede modificar el estado
-    <div hidden class="form-group">
-        <label asp-for="@Model.IdTablero">Id tablero</label>
-        <input asp-for="@Model.IdTablero" class="form-control" id="idTablero" />
+    <div class="form-group">
+        <label asp-for="@Model.IdTablero">Asignar a tablero:</label>
+        <select asp-for="@Model.IdTablero" class="form-select" id="idTablero">
+            @foreach(var tablero in Model.TablerosParaAsignar) { // La tarea pertenecera a algun tablero del usuario
+                <option value="@tablero.Id">@tablero.Nombre</option>
+            }
+        </select>
     </div>
     <div class="form-group">
         <label asp-for="@Model.Nombre">Nombre</label>
@@ -33,10 +38,17 @@
         <input asp-for="@Model.Color" class="form-control" id="color" />
     </div>
     <div class="form-group">
-        <label asp-for="@Model.IdUsuarioAsignado">Id usuario asignado</label>
-        <input asp-for="@Model.IdUsuarioAsignado" class="form-control" id="idUsuarioA" />
+        <label asp-for="@Model.IdUsuarioAsignado">Asignar a usuario:</label>
+        <select asp-for="@Model.IdUsuarioAsignado" class="form-select" id="idTablero">
+            @foreach(var usuario in Model.UsuariosParaAsignar) { // La tarea pertenecera a algun tablero del usuario
+                <option value="@usuario.Id">@usuario.Nombre</option>
+            }
+            <option value="0">Sin Asignar</option>
+        </select>
     </div>
-    } else  { // Si no es admin oculto estos campos
+    <input hidden asp-for="@Model.IdUsuarioAsignado">
+    } else if(idUsuarioLogueado == Model.IdUsuarioAsignado)
+    { // Si es el asignado puede modificar su estado, todo lo demas estara oculto
         <input hidden asp-for="@Model.IdTablero">
         <input hidden asp-for="@Model.Nombre">
         <input hidden asp-for="@Model.Descripcion">

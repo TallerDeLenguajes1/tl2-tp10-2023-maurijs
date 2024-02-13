@@ -41,51 +41,52 @@
                     <td hidden>@tarea.Id</td>
                     <td>@tarea.IdTablero</td>
                     <td>@tarea.Nombre</td>
-                    <td>@((int)tarea.Estado)</td>
+                    <td>@(tarea.Estado.ToString())</td>
                     <td>@tarea.Descripcion</td>
                     <td>@tarea.Color</td>
                     <td hidden>@tarea.IdUsuarioAsignado</td>
-                    <td >@(tarea.NombreUsuarioAsignado != null ? tarea.NombreUsuarioAsignado : "Sin Asignar") </td>
+                    <td >@(tarea.NombreUsuarioAsignado != null ? tarea.NombreUsuarioAsignado : "Sin asignar") </td>
 
                     <td>
                         @if(isAdmin)
                         {
                             <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">Editar</a>
-                            <a class="btn btn-danger"  asp-controller="Tarea" asp-action="DeleteTarea" asp-route-idTarea="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+                            <a class="btn btn-danger"  asp-controller="Tarea" asp-action="EliminarTarea" asp-route-idTarea="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
                         }else {
                             <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">Actualizar Estado</a>
                         }
                     </td>
                 </tr>
             }
+            
             if(!isAdmin)
             {
-            <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Tareas de mis tableros</th>
-            @foreach (var tarea in Model.TareasFromTablerosDelUsuario)
-            {
-                <tr>
-                    <td hidden>@tarea.Id</td>
-                    <td>@tarea.IdTablero</td>
-                    <td>@tarea.Nombre</td>
-                    <td>@((int)tarea.Estado)</td>
-                    <td>@tarea.Descripcion</td>
-                    <td>@tarea.Color</td>
-                    <td hidden>@tarea.IdUsuarioAsignado</td>
-                    <td >@(tarea.NombreUsuarioAsignado != null ? tarea.NombreUsuarioAsignado : "Sin Asignar") </td>
+                <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Tareas de mis tableros</th>
+                @foreach (var tarea in Model.TareasFromTablerosDelUsuario)
+                {
+                    <tr>
+                        <td hidden>@tarea.Id</td>
+                        <td>@tarea.IdTablero</td>
+                        <td>@tarea.Nombre</td>
+                        <td>@(tarea.Estado.ToString())</td>
+                        <td>@tarea.Descripcion</td>
+                        <td>@tarea.Color</td>
+                        <td hidden>@tarea.IdUsuarioAsignado</td>
+                        <td >@(tarea.NombreUsuarioAsignado != null ? tarea.NombreUsuarioAsignado : "Sin asignar") </td>
 
-                    <td>
-                        @if(idUsuarioLogueado == tarea.IdUsuarioAsignado)
-                        {
-                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">Actualizar Estado</a>
-                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Reasignar</a>
-                        } else if(tarea.IdUsuarioAsignado!=0){
-                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Reasignar</a>
-                        } else{
-                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Asignar</a>
-                        }
-                    </td>
-                </tr>
-            }
+                        <td>
+                            @if(idUsuarioLogueado == tarea.IdUsuarioAsignado)
+                            {
+                                <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">Actualizar Estado</a>
+                                <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Reasignar</a>
+                            } else if(tarea.IdUsuarioAsignado!=0){
+                                <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Reasignar</a>
+                            } else{
+                                <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Asignar</a>
+                            }
+                        </td>
+                    </tr>
+                }
 
             }
         }

@@ -93,7 +93,11 @@ public class TareaController : Controller
             if(!IsLogged()) return RedirectToAction("Index", "Login");
             var tarea = tareaRepository.GetTareaById(idTarea);
             if(tarea == null) return RedirectToAction("Index");
-            var tareaVM = new UpdateTareaViewModel(tarea); 
+            var tareaVM = new UpdateTareaViewModel(tarea)
+            {
+                UsuariosParaAsignar = usuarioRepository.GetAll(),
+                TablerosParaAsignar = tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado)
+            };
             return View(tareaVM);
         }
         catch (Exception ex) 
@@ -104,7 +108,7 @@ public class TareaController : Controller
     }
 
     [HttpPost]
-    public IActionResult EditarTareaFromForm(GetTareaViewModel Model){
+    public IActionResult EditarTareaFromForm(UpdateTareaViewModel Model){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!ModelState.IsValid) return RedirectToAction("Index");
         try
