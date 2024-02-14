@@ -54,11 +54,11 @@ public class UsuarioController : Controller
         if(!IsLogged())return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index", "Home");
         var usuario = usuarioRepository.GetUsuarioById(idUsuario);
-        return View(new AddUsuarioViewModel(usuario));
+        return View(new UpdateUsuarioViewModel(usuario));
     }
 
     [HttpPost]
-    public IActionResult EditarUsuarioFromForm(AddUsuarioViewModel usuarioVM){
+    public IActionResult EditarUsuarioFromForm(UpdateUsuarioViewModel usuarioVM){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index", "Home");
         try{
@@ -71,11 +71,11 @@ public class UsuarioController : Controller
     }
 
     public IActionResult EliminarUsuario(int idUsuario){
-        try{
         //Si no esta logueado debe loguearse
-            if(!IsLogged()) return RedirectToAction("Index", "Login");
-            //Solo se puede borrar si es administrador
-            if(!IsAdmin()) return RedirectToAction("Index", "Home");
+        if(!IsLogged()) return RedirectToAction("Index", "Login");
+        //Solo se puede borrar si es administrador
+        if(!IsAdmin()) return RedirectToAction("Index", "Home");
+        try{
 
             var usuarioAEliminar = usuarioRepository.GetUsuarioById(idUsuario);
             if(usuarioAEliminar != null) return View(new EliminarUsuarioViewModel(idUsuario));
