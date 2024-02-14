@@ -34,20 +34,23 @@
     <tbody>
         @foreach (var tablero in Model) // puedo usar tableros o Model
         {
-            <tr>
-                <td hidden>@tablero.Id</td>
-                <td hidden>@tablero.IdUsuarioPropietario</td>
-                <td>@tablero.Nombre</td>
-                <td>@tablero.Descripcion</td>         
-                <td>@(idUsuarioLogueado == tablero.IdUsuarioPropietario ? "Sí" : "No")</td>
-                <td>
-                    @if(idUsuarioLogueado == tablero.IdUsuarioPropietario || isAdmin){
-                            <a class="btn btn-primary" asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tablero.Id">Editar</a>
-                            <a class="btn btn-danger" asp-controller="Tablero" asp-action="DeleteTablero" asp-route-idTablero="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                         
-                    }
-                </td>
-                
-            </tr>
+            if(tablero.Nombre != null)// Si no me aparecen tableros vacios
+            {
+                <tr>
+                    <td hidden>@tablero.Id</td>
+                    <td hidden>@tablero.IdUsuarioPropietario</td>
+                    <td>@tablero.Nombre</td>
+                    <td>@tablero.Descripcion</td>         
+                    <td>@(idUsuarioLogueado == tablero.IdUsuarioPropietario ? "Sí" : "No")</td>
+                    <td>
+                        @if(idUsuarioLogueado == tablero.IdUsuarioPropietario || isAdmin){
+                                <a class="btn btn-primary" asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tablero.Id">Editar</a>
+                                <a class="btn btn-danger" asp-controller="Tablero" asp-action="DeleteTablero" asp-route-idTablero="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                         
+                        }
+                    </td>
+                    
+                </tr>
+            }
         }
         
 

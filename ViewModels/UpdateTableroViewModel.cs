@@ -42,15 +42,4 @@ public class UpdateTableroViewModel{
         idUsuarioPropietario = t.IdUsuarioPropietario;
     }
 
-    public static List<UpdateTableroViewModel> ToViewModel(List<Tablero> tableros)
-    {
-        List<UpdateTableroViewModel> ListarTableroVM = new List<UpdateTableroViewModel>();
-        
-        foreach (var tablero in tableros)
-        {
-            var newTVM = new UpdateTableroViewModel(tablero);
-            ListarTableroVM.Add(newTVM);
-        }
-        return ListarTableroVM;
-    }
 }

@@ -30,10 +30,9 @@ public class TableroController : Controller
             listaTableros = tableroRepository.GetAllTableros();
         } else{
             //No es admin
-            var idUsuario = Convert.ToInt32(HttpContext.Session.GetString("Id"));
             // Tableros que sean propiedad del usuario logueado
-            listaTableros = tableroRepository.GetAllTablerosDeUsuario(idUsuario);
-            var tareas = tareaRepository.GetAllTareasDeUsuario(idUsuario);
+            listaTableros = tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado);
+            var tareas = tareaRepository.GetAllTareasDeUsuario(IdUsuarioLogueado);
             // Si un tablero posee una tarea del usuario logueado (por mas que no sea el propietario) debe mostrarse en el index
             foreach (var tarea in tareas)
             {
@@ -77,10 +76,9 @@ public class TableroController : Controller
     [HttpGet]
     public IActionResult EditarTablero(int idTablero){  
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        if(!IsAdmin()) return RedirectToAction("Index");
         try{
             var tablero = tableroRepository.GetTableroById(idTablero);
-            return View(new GetTableroViewModel(tablero));
+            return View(new UpdateTableroViewModel(tablero));
         }  
         catch (Exception ex){
             _logger.LogError($"Error: {ex.ToString}");
@@ -89,9 +87,8 @@ public class TableroController : Controller
     }
 
     [HttpPost]
-    public IActionResult EditarTableroFromForm(GetTableroViewModel tableroVM){
+    public IActionResult EditarTableroFromForm(UpdateTableroViewModel tableroVM){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        if(!IsAdmin()) return RedirectToAction("Index");
         try{
             var tablero = tableroVM.ToModel();
             tableroRepository.ModificarTablero(tablero);
@@ -105,7 +102,6 @@ public class TableroController : Controller
 
     public IActionResult DeleteTablero(int idTablero){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        if(!IsAdmin()) return RedirectToAction("Index");
         try{
             tableroRepository.EliminarTablero(idTablero);
             return RedirectToAction("Index");
