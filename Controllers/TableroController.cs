@@ -69,8 +69,8 @@ public class TableroController : Controller
         }   
         catch (Exception ex) {
             _logger.LogError($"Error: {ex.ToString}");
+            return RedirectToAction("Index");
         }
-        return RedirectToAction("Index");
     }
 
     [HttpGet]
@@ -82,8 +82,8 @@ public class TableroController : Controller
         }  
         catch (Exception ex){
             _logger.LogError($"Error: {ex.ToString}");
+            return RedirectToAction("Index");
         }
-        return RedirectToAction("Index");
     }
 
     [HttpPost]
@@ -96,8 +96,8 @@ public class TableroController : Controller
         }
         catch (Exception ex) {
             _logger.LogError($"Error: {ex.ToString}");
+            return RedirectToAction("Index");
         }
-        return RedirectToAction("Index");
     }
 
     public IActionResult DeleteTablero(int idTablero){
@@ -108,9 +108,8 @@ public class TableroController : Controller
         }
         catch (Exception ex) {
             _logger.LogError($"Error: {ex.ToString}");
+            return RedirectToAction("Index");
         }
-        return RedirectToAction("Index");
-        
     }
 
     public IActionResult Privacy(){

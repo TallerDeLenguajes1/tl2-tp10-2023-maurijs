@@ -8,7 +8,7 @@
 <form asp-controller="Tarea" asp-action="AgregarTareaFromForm" method="post">
     <div class="form-group">
 
-        <label asp-for="@Model.IdTablero">Id tablero</label>
+        <label asp-for="@Model.IdTablero">Tablero</label>
         <select asp-for="@Model.IdTablero" class="form-select" id="idTablero">
             @foreach(var tablero in Model.tablerosDisponibles) { // La tarea pertenecera a algun tablero del usuario
                 <option value="@tablero.Id">@tablero.Nombre</option>

@@ -29,9 +29,13 @@ public class LoginController : Controller
         {
             if(!ModelState.IsValid) RedirectToAction("Index"); // verifica que el LoginViewModel sea valido
             var usuario = usuarioRepository.GetUsuarioByPassAndName(login.Nombre, login.Contrasenia);
+            if(usuario.Nombre == null) {
+                ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos.");
+                return View("Index");
+            }
             LoguearUsuario(usuario);
             _logger.LogInformation("Usuario " + usuario.Nombre + " logueado exitosamente");
-            return RedirectToAction("Index", "Tablero");
+            return RedirectToAction("Index", "Home");
         }
         catch (Exception ex)
         {

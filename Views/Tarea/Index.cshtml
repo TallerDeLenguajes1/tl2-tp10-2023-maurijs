@@ -5,15 +5,19 @@
 @using Tp11.ViewModels
 @model GetTareasViewModel
 
-<h2>Lista de tareas</h2>
-
 @{
     bool isAdmin = (ViewContext.HttpContext.Session.GetString("Rol") == "administrador");
     int idUsuarioLogueado = Convert.ToInt32(ViewContext.HttpContext.Session.GetString("Id"));
 }
 
+<div class="container mt-4"> <!-- Agregado un contenedor para alinear el botón -->
+    <div class="row mb-3">
+        <div class="col">
+            <a class="btn btn-success" asp-controller="Tarea" asp-action="AgregarTarea">Agregar Tarea</a>
+        </div>
+</div>
 
-<table class="table table-striped table-bordered">
+<table class="table table-striped table-bordered table-bordered-custom ">
     <thead class="thead-dark">
        <th colspan="7" class="text-center display-5 text-primary font-weight-bold">@{ string titulo = isAdmin ? "Todas las tareas" : "Mis tareas asignadas"; } @titulo</th>
         <tr>

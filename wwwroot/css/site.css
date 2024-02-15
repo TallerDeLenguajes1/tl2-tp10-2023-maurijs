@@ -20,3 +20,127 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.table-bordered-custom {
+  border: 1px solid rgb(56, 55, 55); /* Cambia el grosor y el color del borde según sea necesario */
+}
+
+/*Para el formulario de login*/
+.login{
+  position: relative;
+  top: 50%;
+	width: 50%;
+  display: table;
+  margin: -150px auto 0 auto;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.FormPosition{
+  width:35%;
+  border: 1px solid #dedddd;
+}
+.legend{
+  position: relative;
+  width: 100%;
+  display: block;
+  background: #1f58dc;
+  padding: 15px;
+  color: #fff;
+  font-size: 20px;
+  
+  &:after{
+    content: "";
+    background-image: url(http://simpleicon.com/wp-content/uploads/multy-user.png);
+    background-size: 100px 100px;
+    background-repeat: no-repeat;
+    background-position: 152px -16px;
+    opacity: 0.06;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+  }
+}
+
+.input{
+  position: relative;
+  width: 90%;
+  margin: 15px auto;
+  
+  span{
+    position: absolute;
+    display: block;
+    color: darken(#dedddd, 10%);
+    left: 10px;
+    top: 8px;
+    font-size: 20px;
+  }
+  
+  input{
+    width: 100%;
+    padding: 10px 5px 10px 40px;
+    display: block;
+    border: 1px solid #dedddd;
+    border-radius: 4px;
+    transition: 0.2s ease-out;
+    color: darken(#dedddd, 30%);
+    
+    &:focus{
+      padding: 10px 5px 10px 10px;
+      outline: 0;
+      border-color: #1f58dc;
+    }
+  }
+}
+
+.submit{
+  width: 45px;
+  height: 45px;
+  display: block;
+  margin: 0 auto -15px auto;
+  background: #fff;
+  border-radius: 100%;
+  border: 1px solid #1f58dc;
+  color: #1f58dc;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0px 0px 0px 7px #fff;
+  transition: 0.2s ease-out;
+  
+  &:hover, &:focus{
+    background: #1bb63a;
+    color: #fff;
+    outline: 0;
+  }
+}
+
+.feedback{
+  position: absolute;
+  bottom: -70px;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  background: #2ecc71;
+  padding: 10px 0;
+  font-size: 12px;
+  display: none;
+  opacity: 0;
+  
+  &:before{
+    bottom: 100%;
+    left: 50%;
+    border: solid transparent;
+    content: "";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: rgba(46, 204, 113, 0);
+    border-bottom-color: #2ecc71;
+    border-width: 10px;
+    margin-left: -10px;
+    
+  }
+}

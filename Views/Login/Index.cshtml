@@ -1,19 +1,29 @@
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Login";
 }
 
 @using Tp11.ViewModels
 @model LoginViewModel
 
-<h1>@ViewData["Title"]</h1>
-<form asp-controller="Login" asp-action="Login" method="post">
-    <div class="form-group">
-        <label for="username">Nombre de usuario</label>
-        <input asp-for = "@Model.Nombre" class="form-control" id="username">
-    </div>
-    <div class="form-group">
-        <label for="pass">Password</label>
-        <input asp-for = "@Model.Contrasenia" class="form-control" id="pass">
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+<form class="FormPosition" asp-controller="Login" asp-action="Login" method="post">
+    <fieldset>
+        <legend class="legend">Iniciar sesion</legend>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" }) <!-- Mostrar mensajes de error del ModelState -->
+        <div class="input form-group">
+            <input type="text" asp-for="@Model.Nombre" placeholder="Usuario" required />
+            <span><i class="fa fa-user"></i></span>
+        </div>
+        <div class="input form-group">
+            <input type="password" asp-for="@Model.Contrasenia" placeholder="Contraseña" required />
+            <span><i class="fa fa-lock"></i></span>
+        </div>
+    </fieldset>
+    <button type="submit" class="submit"><i class="fa fa-long-arrow-right"></i></button>
+    
+  <div class="feedback">
+  	login successful <br />
+    redirecting...
+  </div>
 </form>
+
+
