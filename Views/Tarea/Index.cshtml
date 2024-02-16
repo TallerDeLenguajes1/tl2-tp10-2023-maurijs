@@ -40,7 +40,7 @@
         @if(Model.VerTableroIndividual){
             <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Tareas del tablero: @Model.NombreDelTablero</th>
         }else {
-            <th colspan="7" class="text-center display-5 text-primary font-weight-bold">@{ string titulo = isAdmin ? "Todas las tareas" : "Mis tareas asignadas"; } @titulo</th>
+            <th colspan="7" class="text-center display-5 text-primary font-weight-bold">@{ string titulo = isAdmin ? "Todas las tareas" : "Tareas asignadas"; } @titulo</th>
         }
         <tr>
             <th hidden>ID</th>

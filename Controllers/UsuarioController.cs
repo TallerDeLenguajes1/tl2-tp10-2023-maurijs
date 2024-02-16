@@ -22,7 +22,7 @@ public class UsuarioController : Controller
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         try{
             var usuarios = usuarioRepository.GetAll();
-            var usuariosVM = GetUsuarioViewModel.ToViewModel(usuarios); 
+            var usuariosVM = ListarUsuarioViewModel.ToViewModel(usuarios); 
             return View(usuariosVM);
         }catch(Exception ex){
             _logger.LogError(ex.ToString());

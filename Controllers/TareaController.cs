@@ -29,13 +29,13 @@ public class TareaController : Controller
 
         try{
             var listaTareas = new List<Tarea>();
-            var GetTareasViewModel = new GetTareasViewModel(usuarioRepository);
+            var GetTareasViewModel = new ListarTareasViewModel(usuarioRepository);
             GetTareasViewModel.VerTableroIndividual = false;
 
             if(idTablero.HasValue){
                 var Tablero = tableroRepository.GetTableroById(idTablero);
                 listaTareas = tareaRepository.GetAllTareasDeTablero(idTablero); // Si idTablero es nulo se usara el valor 0
-                GetTareasViewModel.TareasFromTablerosDelUsuario = GetTareasViewModel.ToViewModel(listaTareas);
+                GetTareasViewModel.TareasFromTablerosDelUsuario = ListarTareasViewModel.ToViewModel(listaTareas);
 
                 GetTareasViewModel.IsAdmin = IsAdmin();
                 GetTareasViewModel.GetNombresDeUsuario();
@@ -48,18 +48,18 @@ public class TareaController : Controller
             if (IsAdmin())
             {
                 listaTareas = tareaRepository.GetAllTareas();
-                GetTareasViewModel.TodasLasTareas = GetTareasViewModel.ToViewModel(listaTareas); 
+                GetTareasViewModel.TodasLasTareas = ListarTareasViewModel.ToViewModel(listaTareas); 
                 GetTareasViewModel.IsAdmin = true;
 
             }else {
                 GetTareasViewModel.IsAdmin = false; 
                 //Tareas asignadas al usuario
                 listaTareas = tareaRepository.GetTareasAsignadasAUsuario(IdUsuarioLogueado);
-                GetTareasViewModel.TareasAsignadasAlUsuario = GetTareasViewModel.ToViewModel(listaTareas); 
+                GetTareasViewModel.TareasAsignadasAlUsuario = ListarTareasViewModel.ToViewModel(listaTareas); 
 
                 //Tareas pertenecientes a sus tableros (pueden o no estar asignadas a el mismo)
                 var tareasDeSusTableros = tareaRepository.GetTareasFromTablerosDelUsuario(IdUsuarioLogueado);
-                GetTareasViewModel.TareasFromTablerosDelUsuario = GetTareasViewModel.ToViewModel(tareasDeSusTableros); 
+                GetTareasViewModel.TareasFromTablerosDelUsuario = ListarTareasViewModel.ToViewModel(tareasDeSusTableros); 
             }
             GetTareasViewModel.GetNombresDeUsuario();
             return View(GetTareasViewModel);

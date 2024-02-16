@@ -66,7 +66,7 @@ namespace EspacioRepositorios
             {
                 connection.Open();
                 using var command = connection.CreateCommand();
-                command.CommandText = "SELECT * FROM Tablero";
+                command.CommandText = "SELECT id_tablero, id_usuario_propietario, t.nombre, descripcion, u.nombre_usuario AS propietario FROM Tablero t INNER JOIN Usuario u ON u.id = t.id_usuario_propietario;";
                 command.ExecuteNonQuery();
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
@@ -77,7 +77,8 @@ namespace EspacioRepositorios
                             Nombre = reader["nombre"].ToString(),
                             Descripcion = reader["descripcion"].ToString(),
                             IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]),
-                            Id = Convert.ToInt32(reader["id_tablero"])
+                            Id = Convert.ToInt32(reader["id_tablero"]),
+                            NombreUsuarioPropietario = reader["propietario"].ToString()
                         };
                         listaTableros.Add(tablero);
                     }
@@ -103,8 +104,8 @@ namespace EspacioRepositorios
                 connection.Open();
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM Tablero WHERE id_usuario_propietario = @idUsuario;";
-                    command.Parameters.Add(new SQLiteParameter("idUsuario", idUsuario));
+                    command.CommandText = "SELECT id_tablero, id_usuario_propietario, t.nombre, descripcion, u.nombre_usuario AS propietario FROM Tablero t INNER JOIN Usuario u ON u.id = t.id_usuario_propietario WHERE t.id_usuario_propietario = @idUsuario;";
+                    command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
                     command.ExecuteNonQuery();
                     using (var reader = command.ExecuteReader())
                     {
@@ -115,7 +116,8 @@ namespace EspacioRepositorios
                                 Nombre = reader["nombre"].ToString(),
                                 Descripcion = reader["descripcion"].ToString(),
                                 Id = Convert.ToInt32(reader["id_tablero"]),
-                                IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"])
+                                IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]),
+                                NombreUsuarioPropietario = reader["propietario"].ToString()
                             };
                             listaTableros.Add(tablero);
                         }
@@ -142,8 +144,8 @@ namespace EspacioRepositorios
                 connection.Open();
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM Tablero WHERE id_tablero = @idTablero;";
-                    command.Parameters.Add(new SQLiteParameter("idTablero", idTablero));
+                    command.CommandText = "SELECT id_tablero, id_usuario_propietario, t.nombre, descripcion, u.nombre_usuario AS propietario FROM Tablero t INNER JOIN Usuario u ON u.id = t.id_usuario_propietario WHERE t.id_tablero = @idTablero;";
+                    command.Parameters.Add(new SQLiteParameter("@idTablero", idTablero));
                     command.ExecuteNonQuery();
                     using (var reader = command.ExecuteReader())
                     {
@@ -154,7 +156,8 @@ namespace EspacioRepositorios
                                 Nombre = reader["nombre"].ToString(),
                                 Descripcion = reader["descripcion"].ToString(),
                                 Id = Convert.ToInt32(reader["id_tablero"]),
-                                IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"])
+                                IdUsuarioPropietario = Convert.ToInt32(reader["id_usuario_propietario"]),
+                                NombreUsuarioPropietario = reader["propietario"].ToString()
                             };
                         }
                     }

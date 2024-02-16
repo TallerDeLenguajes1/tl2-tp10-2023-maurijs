@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using tp10.Models;
 namespace Tp11.ViewModels;
 
-public class GetTableroViewModel{
+public class ElementoTableroViewModel{
     private int id;
     // atributos de validacion
     [Required(ErrorMessage = "Este campo es requerido.")]  // El campo id es requerido obligatoriamente    
@@ -24,6 +24,7 @@ public class GetTableroViewModel{
     [Required(ErrorMessage = "Este campo es requerido.")]
     public string NombrePropietario {get; set;}
 
+
     public Tablero ToModel()
     {
         var tablero = new Tablero
@@ -36,22 +37,23 @@ public class GetTableroViewModel{
         return tablero;
     }
     
-    public GetTableroViewModel(){}
-    public GetTableroViewModel(Tablero t)
+    public ElementoTableroViewModel(){}
+    public ElementoTableroViewModel(Tablero t)
     {
         id = t.Id;
         nombre = t.Nombre;
         descripcion = t.Descripcion;
         idUsuarioPropietario = t.IdUsuarioPropietario;
+        NombrePropietario = t.NombreUsuarioPropietario;
     }
 
-    public static List<GetTableroViewModel> ToViewModel(List<Tablero> tableros)
+    public static List<ElementoTableroViewModel> ToViewModel(List<Tablero> tableros)
     {
-        List<GetTableroViewModel> ListarTableroVM = new List<GetTableroViewModel>();
+        List<ElementoTableroViewModel> ListarTableroVM = new List<ElementoTableroViewModel>();
         
         foreach (var tablero in tableros)
         {
-            var newTVM = new GetTableroViewModel(tablero);
+            var newTVM = new ElementoTableroViewModel(tablero);
             ListarTableroVM.Add(newTVM);
         }
         return ListarTableroVM;
@@ -59,9 +61,9 @@ public class GetTableroViewModel{
 
 }
 
-public class GetTablerosViewModel
+public class ListarTablerosViewModel
 {
-    public List<GetTableroViewModel> ListaTableros {get;set;}
+    public List<ElementoTableroViewModel> ListaTableros {get;set;}
     public bool IsAdmin {get;set;}
     public bool VerTablerosDeUsuarioIndividual;
     public string NombreUsuario {get;set;}

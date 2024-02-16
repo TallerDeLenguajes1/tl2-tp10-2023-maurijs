@@ -25,27 +25,22 @@ public class TableroController : Controller
    public IActionResult Index(int? idUsuario){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         List<Tablero> listaTableros;
-        GetTablerosViewModel ViewModel = new GetTablerosViewModel
-        {
-            IsAdmin = false,
-            VerTablerosDeUsuarioIndividual = false
+        ListarTablerosViewModel ViewModel = new ListarTablerosViewModel {
+            IsAdmin = IsAdmin(),
+            VerTablerosDeUsuarioIndividual = idUsuario.HasValue
         };
         
         try
         {
             if(idUsuario.HasValue)  
             {   
-                ViewModel.VerTablerosDeUsuarioIndividual = true;
                 ViewModel.NombreUsuario = usuarioRepository.GetUsuarioById(idUsuario).Nombre;
                 listaTableros = tableroRepository.GetAllTablerosDeUsuario(idUsuario);
             }
             else if (IsAdmin()) // Si no quiere ver los tableros de un usuario individual
             {
-                ViewModel.IsAdmin = true;
                 listaTableros = tableroRepository.GetAllTableros();
             } else{
-                //No es admin
-                ViewModel.IsAdmin = false;
                 // Tableros que sean propiedad del usuario logueado
                 listaTableros = tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado);
                 var tareas = tareaRepository.GetTareasAsignadasAUsuario(IdUsuarioLogueado);
@@ -59,13 +54,7 @@ public class TableroController : Controller
                     }
                 } 
             }
-            ViewModel.ListaTableros = GetTableroViewModel.ToViewModel(listaTableros);
-            foreach (var tablero in ViewModel.ListaTableros)
-            {
-                string nombrePropietario = usuarioRepository.GetUsuarioById(tablero.IdUsuarioPropietario).Nombre;
-                tablero.NombrePropietario = nombrePropietario;
-            }
-            
+            ViewModel.ListaTableros = ElementoTableroViewModel.ToViewModel(listaTableros);
            return View(ViewModel);
         }
         catch (Exception ex) {
