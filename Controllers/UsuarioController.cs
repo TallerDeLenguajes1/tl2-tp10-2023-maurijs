@@ -20,10 +20,14 @@ public class UsuarioController : Controller
     public IActionResult Index(){
         //Si no esta loggeado redirecciona al index de login
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        if(!IsAdmin()) return RedirectToAction("Index", "Home");
-        var usuarios = usuarioRepository.GetAll();
-        var usuariosVM = GetUsuarioViewModel.ToViewModel(usuarios); 
-        return View(usuariosVM);
+        try{
+            var usuarios = usuarioRepository.GetAll();
+            var usuariosVM = GetUsuarioViewModel.ToViewModel(usuarios); 
+            return View(usuariosVM);
+        }catch(Exception ex){
+            _logger.LogError(ex.ToString());
+            return RedirectToAction("Index");
+        }
     }
 
     [HttpGet]
@@ -64,10 +68,11 @@ public class UsuarioController : Controller
         try{
             var usuario = usuarioVM.ToModel();
             usuarioRepository.ModificarUsuario(usuario); 
+            return RedirectToAction("Index");
         } catch(Exception ex){
             _logger.LogError(ex.ToString());
+            return RedirectToAction("Index");
         }
-        return RedirectToAction("Index");
     }
 
     public IActionResult EliminarUsuario(int idUsuario){
@@ -78,12 +83,12 @@ public class UsuarioController : Controller
         try{
 
             var usuarioAEliminar = usuarioRepository.GetUsuarioById(idUsuario);
-            if(usuarioAEliminar != null) return View(new EliminarUsuarioViewModel(idUsuario));
-            
+            if(usuarioAEliminar != null)  return View(new EliminarUsuarioViewModel(idUsuario));
+           return RedirectToAction("Index");    
         }catch(Exception ex){
             _logger.LogError(ex.ToString());
+            return RedirectToAction("Index");
         }
-        return RedirectToAction("Index");
     }
 
     public IActionResult EliminarFromFormulario(int idUsuario)
@@ -99,8 +104,8 @@ public class UsuarioController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex.ToString());
+            return RedirectToAction("Index");   
         }
-        return RedirectToAction("Index");   
     }
 
     public IActionResult Privacy(){

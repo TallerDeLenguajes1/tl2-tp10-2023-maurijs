@@ -8,7 +8,7 @@ namespace EspacioRepositorios
         Tablero ModificarTablero(Tablero T);
         Tablero GetTableroById(int? idTablero);
         List<Tablero> GetAllTableros();
-        List<Tablero >GetAllTablerosDeUsuario(int idUsuario);
+        List<Tablero >GetAllTablerosDeUsuario(int? idUsuario);
         int EliminarTablero(int idTablero);
     }
 }

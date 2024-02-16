@@ -25,41 +25,69 @@ public class TableroController : Controller
    public IActionResult Index(int? idUsuario){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         List<Tablero> listaTableros;
-        if (IsAdmin())
+        GetTablerosViewModel ViewModel = new GetTablerosViewModel
         {
-            listaTableros = tableroRepository.GetAllTableros();
-        } else{
-            //No es admin
-            // Tableros que sean propiedad del usuario logueado
-            listaTableros = tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado);
-            var tareas = tareaRepository.GetTareasAsignadasAUsuario(IdUsuarioLogueado);
-            // Si un tablero posee una tarea del usuario logueado (por mas que no sea el propietario) debe mostrarse en el index
-            foreach (var tarea in tareas)
+            IsAdmin = false,
+            VerTablerosDeUsuarioIndividual = false
+        };
+        
+        try
+        {
+            if(idUsuario.HasValue)  
+            {   
+                ViewModel.VerTablerosDeUsuarioIndividual = true;
+                ViewModel.NombreUsuario = usuarioRepository.GetUsuarioById(idUsuario).Nombre;
+                listaTableros = tableroRepository.GetAllTablerosDeUsuario(idUsuario);
+            }
+            else if (IsAdmin()) // Si no quiere ver los tableros de un usuario individual
             {
-                var tablero = tableroRepository.GetTableroById(tarea.IdTablero);
-                if (!listaTableros.Contains(tablero))
+                ViewModel.IsAdmin = true;
+                listaTableros = tableroRepository.GetAllTableros();
+            } else{
+                //No es admin
+                ViewModel.IsAdmin = false;
+                // Tableros que sean propiedad del usuario logueado
+                listaTableros = tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado);
+                var tareas = tareaRepository.GetTareasAsignadasAUsuario(IdUsuarioLogueado);
+                // Si un tablero posee una tarea del usuario logueado (por mas que no sea el propietario) debe mostrarse en el index
+                foreach (var tarea in tareas)
                 {
-                    listaTableros.Add(tablero);
-                }
-            } 
+                    var tablero = tableroRepository.GetTableroById(tarea.IdTablero);
+                    if (!listaTableros.Contains(tablero))
+                    {
+                        listaTableros.Add(tablero);
+                    }
+                } 
+            }
+            ViewModel.ListaTableros = GetTableroViewModel.ToViewModel(listaTableros);
+            foreach (var tablero in ViewModel.ListaTableros)
+            {
+                string nombrePropietario = usuarioRepository.GetUsuarioById(tablero.IdUsuarioPropietario).Nombre;
+                tablero.NombrePropietario = nombrePropietario;
+            }
+            
+           return View(ViewModel);
         }
-        var listaTablerosVM = GetTableroViewModel.ToViewModel(listaTableros);
-        foreach (var tablero in listaTablerosVM)
-        {
-            string nombrePropietario = usuarioRepository.GetUsuarioById(tablero.IdUsuarioPropietario).Nombre;
-            tablero.NombrePropietario = nombrePropietario;
+        catch (Exception ex) {
+            _logger.LogError($"Error: {ex.ToString}");
+            return RedirectToAction("Index", "Home");
         }
-        return View(listaTablerosVM);
     }
 
     [HttpGet]
     public IActionResult AgregarTablero(){ //Si agrego parametros envia un bad request
         if(!IsLogged()) return RedirectToAction("Index", "Login");
-        var tableroVM = new AddTableroViewModel
-        {
-            IdUsuarioPropietario = IdUsuarioLogueado,
-        };
-        return View(tableroVM); 
+        try{
+            var tableroVM = new AddTableroViewModel
+            {
+                IdUsuarioPropietario = IdUsuarioLogueado,
+            };
+            return View(tableroVM); 
+        }
+        catch (Exception ex) {
+            _logger.LogError($"Error: {ex.ToString}");
+            return RedirectToAction("Index");
+        }
     }
 
     [HttpPost]

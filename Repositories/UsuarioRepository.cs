@@ -94,7 +94,7 @@ namespace EspacioRepositorios
             return user;
         }
 
-        public Usuario GetUsuarioById(int idUsuario)
+        public Usuario GetUsuarioById(int? idUsuario)
         {
             var usuario = new Usuario();
             using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion)){

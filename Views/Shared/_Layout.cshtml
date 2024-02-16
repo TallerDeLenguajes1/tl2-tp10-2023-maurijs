@@ -30,22 +30,25 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Tarea" asp-action="Index">Tarea</a>
                         </li>
-
-                        @if(ViewContext.HttpContext.Session.GetString("Rol") == "administrador")
-                        { //Solo el admin puede ver y editar la lista de usuarios
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
-                            </li>
-                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuarios</a>
+                        </li>
+                    
                     </ul>
                         @if(ViewContext.HttpContext.Session.GetString("Nombre") == null)
                         {
                             <button class="btn btn-success">
-                                <a asp-controller="Login" asp-action="Index" class="text-white">Iniciar sesion</a>
+                                <a asp-controller="Login" asp-action="Index" class="text-white">
+                                    <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+                                </a>
                             </button>
-                        } else{
+                        }
+                        else
+                        {
                             <button class="btn btn-danger">
-                                <a asp-controller="Login" asp-action="Desloguear" class="text-white">Cerrar sesion</a>
+                                <a asp-controller="Login" asp-action="Desloguear" class="text-white">
+                                    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                                </a>
                             </button>
                         }
                 </div>

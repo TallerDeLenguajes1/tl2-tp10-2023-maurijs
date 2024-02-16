@@ -58,3 +58,11 @@ public class GetTableroViewModel{
     }
 
 }
+
+public class GetTablerosViewModel
+{
+    public List<GetTableroViewModel> ListaTableros {get;set;}
+    public bool IsAdmin {get;set;}
+    public bool VerTablerosDeUsuarioIndividual;
+    public string NombreUsuario {get;set;}
+}

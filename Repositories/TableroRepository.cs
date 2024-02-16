@@ -94,7 +94,7 @@ namespace EspacioRepositorios
             return listaTableros;
         }
 
-        public List<Tablero> GetAllTablerosDeUsuario(int idUsuario)
+        public List<Tablero> GetAllTablerosDeUsuario(int? idUsuario)
         {
             var listaTableros = new List<Tablero>();
             using var connection = new SQLiteConnection(cadenaDeConexion);
