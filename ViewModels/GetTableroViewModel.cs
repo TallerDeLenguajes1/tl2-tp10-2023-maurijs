@@ -21,6 +21,9 @@ public class GetTableroViewModel{
 
     public string Descripcion { get => descripcion; set => descripcion = value; }
 
+    [Required(ErrorMessage = "Este campo es requerido.")]
+    public string NombrePropietario {get; set;}
+
     public Tablero ToModel()
     {
         var tablero = new Tablero
@@ -53,4 +56,5 @@ public class GetTableroViewModel{
         }
         return ListarTableroVM;
     }
+
 }

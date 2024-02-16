@@ -57,6 +57,13 @@ public class TareaController : Controller
         return RedirectToAction("Index");
     }
 
+    [HttpGet]
+    public IActionResult GetTareasByIdTablero(int idTablero)
+    {
+        
+        
+    }
+
 
     [HttpGet]
     public IActionResult AgregarTarea(){ //Si agrego parametros envia un bad request

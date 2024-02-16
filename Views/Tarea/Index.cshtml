@@ -22,7 +22,7 @@
        <th colspan="7" class="text-center display-5 text-primary font-weight-bold">@{ string titulo = isAdmin ? "Todas las tareas" : "Mis tareas asignadas"; } @titulo</th>
         <tr>
             <th hidden>ID</th>
-            <th>IdTablero</th>
+            <th hidden>IdTablero</th>
             <th>Nombre</th>
             <th>Estado</th>
             <th>Descripcion</th>
@@ -43,7 +43,7 @@
             {
                 <tr>
                     <td hidden>@tarea.Id</td>
-                    <td>@tarea.IdTablero</td>
+                    <td hidden>@tarea.IdTablero</td>
                     <td>@tarea.Nombre</td>
                     <td>@(tarea.Estado.ToString())</td>
                     <td>@tarea.Descripcion</td>
@@ -54,8 +54,12 @@
                     <td>
                         @if(isAdmin)
                         {
-                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">Editar</a>
-                            <a class="btn btn-danger"  asp-controller="Tarea" asp-action="EliminarTarea" asp-route-idTarea="@tarea.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                      
+                            <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a class="btn btn-danger" asp-controller="Tarea" asp-action="EliminarTarea" asp-route-idTarea="@tarea.Id" onclick="return confirm('¿Estás seguro que quieres eliminar el elemento?')">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>
                         }else {
                             <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">Actualizar Estado</a>
                         }

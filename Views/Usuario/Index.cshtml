@@ -28,8 +28,12 @@
                 <td hidden>@usuario.Id</td>
                 <td>@usuario.Nombre</td>
                 <td>
-                    <a class="btn btn-primary" asp-controller="Usuario" asp-action="EditarUsuario" asp-route-idUsuario="@usuario.Id">Editar</a>
-                    <a class="btn btn-danger" asp-controller="Usuario" asp-action="EliminarUsuario" asp-route-idUsuario="@usuario.Id">Eliminar</a>                      
+                    <a class="btn btn-primary" asp-controller="Usuario" asp-action="EditarUsuario" asp-route-idUsuario="@usuario.Id">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a class="btn btn-danger" asp-controller="Usuario" asp-action="EliminarUsuario" asp-route-idUsuario="@usuario.Id">
+                        <i class="fas fa-trash-alt"></i> Eliminar
+                    </a>                      
                 </td>
             </tr>
         }

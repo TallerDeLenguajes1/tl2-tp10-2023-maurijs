@@ -21,9 +21,6 @@ body {
   margin-bottom: 60px;
 }
 
-.table-bordered-custom {
-  border: 1px solid rgb(56, 55, 55); /* Cambia el grosor y el color del borde según sea necesario */
-}
 
 /*Para el formulario de login*/
 .login{
@@ -36,10 +33,6 @@ body {
   border-radius: 4px;
 }
 
-.FormPosition{
-  width:35%;
-  border: 1px solid #dedddd;
-}
 .legend{
   position: relative;
   width: 100%;
@@ -143,4 +136,12 @@ body {
     margin-left: -10px;
     
   }
+}
+.main {
+  margin: 40px auto 0 auto; 
+}
+.FormPosition{
+  width: 30%; 
+  margin: auto; 
+  border: 1px solid #dedddd;
 }

@@ -17,7 +17,7 @@
             <a class="btn btn-success" asp-controller="Tablero" asp-action="AgregarTablero">Agregar Tablero</a>
         </div>
 </div>
-<table class="table table-striped table-bordered table-bordered-custom">
+<table class="table table-striped table-bordered">
     <thead class="thead-dark">
         <tr> 
             @if(isAdmin)
@@ -47,11 +47,15 @@
                     <td hidden>@tablero.IdUsuarioPropietario</td>
                     <td>@tablero.Nombre</td>
                     <td>@tablero.Descripcion</td>         
-                    <td>@(idUsuarioLogueado == tablero.IdUsuarioPropietario ? "Sí" : "No")</td>
+                    <td>@tablero.NombrePropietario </td>
                     <td>
                         @if(idUsuarioLogueado == tablero.IdUsuarioPropietario || isAdmin){
-                                <a class="btn btn-primary" asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tablero.Id">Editar</a>
-                                <a class="btn btn-danger" asp-controller="Tablero" asp-action="DeleteTablero" asp-route-idTablero="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">Eliminar</a>                         
+                            <a class="btn btn-primary" asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tablero.Id">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a class="btn btn-danger" asp-controller="Tablero" asp-action="DeleteTablero" asp-route-idTablero="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>                         
                         }
                     </td>
                     

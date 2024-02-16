@@ -43,7 +43,13 @@ public class TableroController : Controller
                 }
             } 
         }
-        return View(GetTableroViewModel.ToViewModel(listaTableros));
+        var listaTablerosVM = GetTableroViewModel.ToViewModel(listaTableros);
+        foreach (var tablero in listaTablerosVM)
+        {
+            string nombrePropietario = usuarioRepository.GetUsuarioById(tablero.IdUsuarioPropietario).Nombre;
+            tablero.NombrePropietario = nombrePropietario;
+        }
+        return View(listaTablerosVM);
     }
 
     [HttpGet]
