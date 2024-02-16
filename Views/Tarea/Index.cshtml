@@ -19,7 +19,11 @@
 
 <table class="table table-striped table-bordered table-bordered-custom ">
     <thead class="thead-dark">
-       <th colspan="7" class="text-center display-5 text-primary font-weight-bold">@{ string titulo = isAdmin ? "Todas las tareas" : "Mis tareas asignadas"; } @titulo</th>
+        @if(Model.VerTableroIndividual){
+            <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Tareas del tablero: @Model.NombreDelTablero</th>
+        }else {
+            <th colspan="7" class="text-center display-5 text-primary font-weight-bold">@{ string titulo = isAdmin ? "Todas las tareas" : "Mis tareas asignadas"; } @titulo</th>
+        }
         <tr>
             <th hidden>ID</th>
             <th hidden>IdTablero</th>
@@ -34,9 +38,12 @@
     </thead>
     <tbody>
         @{ List<GetTareaViewModel> tareas;
-            if(isAdmin) {
-             tareas = Model.TodasLasTareas;
-            } else  { 
+            if(Model.VerTableroIndividual) 
+            {
+                tareas = Model.TareasFromTablerosDelUsuario;
+            } else if(isAdmin) { 
+                tareas = Model.TodasLasTareas;
+            }else {
                 tareas = Model.TareasAsignadasAlUsuario;
             }
             @foreach (var tarea in tareas)
@@ -60,21 +67,29 @@
                             <a class="btn btn-danger" asp-controller="Tarea" asp-action="EliminarTarea" asp-route-idTarea="@tarea.Id" onclick="return confirm('¿Estás seguro que quieres eliminar el elemento?')">
                                 <i class="fas fa-trash-alt"></i> Eliminar
                             </a>
-                        }else {
+                        }else if(idUsuarioLogueado == Model.IdPropietarioDelTablero){
+                                 if(tarea.IdUsuarioAsignado!=0){ // Si ya esta asignada a un usuario
+                                    <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Reasignar</a>
+                                } else{
+                                    <a class="btn btn-primary" asp-controller="Tarea" asp-action="AsignarTarea" asp-route-idTarea="@tarea.Id">Asignar</a>
+                                }
+                        }
+
+                        @if(idUsuarioLogueado == tarea.IdUsuarioAsignado){   
                             <a class="btn btn-primary" asp-controller="Tarea" asp-action="UpdateTarea" asp-route-idTarea="@tarea.Id">Actualizar Estado</a>
                         }
                     </td>
                 </tr>
             }
             
-            if(!isAdmin)
+            if(!isAdmin && !Model.VerTableroIndividual)// Si no es admin y no se pidio ver las tareas de un tablero especifico
             {
                 <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Tareas de mis tableros</th>
                 @foreach (var tarea in Model.TareasFromTablerosDelUsuario)
                 {
                     <tr>
                         <td hidden>@tarea.Id</td>
-                        <td>@tarea.IdTablero</td>
+                        <td hidden>@tarea.IdTablero</td>
                         <td>@tarea.Nombre</td>
                         <td>@(tarea.Estado.ToString())</td>
                         <td>@tarea.Descripcion</td>

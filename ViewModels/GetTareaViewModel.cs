@@ -62,7 +62,9 @@ public class GetTareasViewModel
     public List<GetTareaViewModel> TareasFromTablerosDelUsuario{get; set;}
     public List<GetTareaViewModel> TodasLasTareas{get; set;}
     //Recibe una lista de tareas y crea un lista de TareasViewModel
-
+    public bool VerTableroIndividual {get;set;} //Solo es true cuando quiero ver las tareas de un solo tablero
+    public string NombreDelTablero {get;set;} //Solo para cuando quiero ver todas las tareas de un determinado tablero
+    public int IdPropietarioDelTablero {get;set;} //Solo para cuando quiero ver todas las tareas de un determinado tablero
     public GetTareasViewModel(IUsuarioRepository usuarioRepository)
     {
         _usuarioRepository = usuarioRepository;

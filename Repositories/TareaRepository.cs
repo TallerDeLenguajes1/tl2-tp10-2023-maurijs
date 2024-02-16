@@ -112,7 +112,7 @@ namespace EspacioRepositorios
             if(tarea == null) throw new Exception("Tarea no encontrada");
             return tarea;
         }
-        public List<Tarea> GetAllTareasDeTablero(int idTablero)
+        public List<Tarea> GetAllTareasDeTablero(int? idTablero)
         {
             var listaTareas = new List<Tarea>();
             using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
@@ -121,7 +121,7 @@ namespace EspacioRepositorios
                 {
                     connection.Open();
                     SQLiteCommand commando = connection.CreateCommand();
-                    commando.CommandText = "SELECT id_tarea, nombre, estado, descripcion, color, id_usuario_asignado, id_tablero FROM Tarea INNER JOIN Tablero USING (id_tablero) WHERE tablero.id_tablero = @idTablero;";
+                    commando.CommandText = "SELECT id_tarea, nombre, estado, descripcion, color, id_usuario_asignado, id_tablero FROM Tarea WHERE Tarea.id_tablero = @idTablero;";
                     commando.Parameters.Add(new SQLiteParameter("@idTablero", idTablero));
                     using(SQLiteDataReader reader = commando.ExecuteReader())
                     {
@@ -150,7 +150,9 @@ namespace EspacioRepositorios
             }
         }
 
-        public List<Tarea> GetAllTareasDeUsuario(int idUsuario)
+        //Tareas asignadas al usuario
+
+        public List<Tarea> GetTareasAsignadasAUsuario(int idUsuario)
         {
             var listaTareas = new List<Tarea>();
             using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion)){
@@ -283,7 +285,8 @@ namespace EspacioRepositorios
             return listaTareas;
         }
 
-        public List<Tarea> GetTareasFromTableros(int idUsuario)
+        //Tareas pertenecientes a sus tableros (que pueden estar asignadas a otro usuario)
+        public List<Tarea> GetTareasFromTablerosDelUsuario(int idUsuario)
         {
             var listaTareas = new List<Tarea>();
             using var connection = new SQLiteConnection(cadenaDeConexion);

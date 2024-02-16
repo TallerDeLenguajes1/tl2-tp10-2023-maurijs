@@ -55,8 +55,11 @@
                             </a>
                             <a class="btn btn-danger" asp-controller="Tablero" asp-action="DeleteTablero" asp-route-idTablero="@tablero.Id" onclick="return confirm('¿Estas seguro que quieres eliminar el elemento?')">
                                 <i class="fas fa-trash-alt"></i> Eliminar
-                            </a>                         
+                            </a>                        
                         }
+                        <a class="btn btn-info" asp-controller="Tarea" asp-action="Index" asp-route-idTablero="@tablero.Id">
+                            <i class="fas fa-clipboard-list"></i> Ver tareas
+                        </a> 
                     </td>
                     
                 </tr>

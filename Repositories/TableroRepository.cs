@@ -133,7 +133,7 @@ namespace EspacioRepositorios
             return listaTableros;
         }
 
-        public Tablero GetTableroById(int idTablero)
+        public Tablero GetTableroById(int? idTablero)
         {
             var tablero = new Tablero();
             using var connection = new SQLiteConnection(cadenaDeConexion);

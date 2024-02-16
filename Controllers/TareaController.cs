@@ -24,13 +24,27 @@ public class TareaController : Controller
 
 
     //Muestra Usuarios
-    public IActionResult Index(){
+    public IActionResult Index(int? idTablero){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
 
-        var listaTareas = new List<Tarea>();
-        var GetTareasViewModel = new GetTareasViewModel(usuarioRepository);
-
         try{
+            var listaTareas = new List<Tarea>();
+            var GetTareasViewModel = new GetTareasViewModel(usuarioRepository);
+            GetTareasViewModel.VerTableroIndividual = false;
+
+            if(idTablero.HasValue){
+                var Tablero = tableroRepository.GetTableroById(idTablero);
+                listaTareas = tareaRepository.GetAllTareasDeTablero(idTablero); // Si idTablero es nulo se usara el valor 0
+                GetTareasViewModel.TareasFromTablerosDelUsuario = GetTareasViewModel.ToViewModel(listaTareas);
+
+                GetTareasViewModel.IsAdmin = IsAdmin();
+                GetTareasViewModel.GetNombresDeUsuario();
+                GetTareasViewModel.NombreDelTablero = Tablero.Nombre;
+                GetTareasViewModel.IdPropietarioDelTablero = Tablero.IdUsuarioPropietario;
+                GetTareasViewModel.VerTableroIndividual = true;
+                return View(GetTareasViewModel);
+            }
+
             if (IsAdmin())
             {
                 listaTareas = tareaRepository.GetAllTareas();
@@ -40,11 +54,11 @@ public class TareaController : Controller
             }else {
                 GetTareasViewModel.IsAdmin = false; 
                 //Tareas asignadas al usuario
-                listaTareas = tareaRepository.GetAllTareasDeUsuario(IdUsuarioLogueado);
+                listaTareas = tareaRepository.GetTareasAsignadasAUsuario(IdUsuarioLogueado);
                 GetTareasViewModel.TareasAsignadasAlUsuario = GetTareasViewModel.ToViewModel(listaTareas); 
 
                 //Tareas pertenecientes a sus tableros (pueden o no estar asignadas a el mismo)
-                var tareasDeSusTableros = tareaRepository.GetTareasFromTableros(IdUsuarioLogueado);
+                var tareasDeSusTableros = tareaRepository.GetTareasFromTablerosDelUsuario(IdUsuarioLogueado);
                 GetTareasViewModel.TareasFromTablerosDelUsuario = GetTareasViewModel.ToViewModel(tareasDeSusTableros); 
             }
             GetTareasViewModel.GetNombresDeUsuario();
@@ -57,14 +71,7 @@ public class TareaController : Controller
         return RedirectToAction("Index");
     }
 
-    [HttpGet]
-    public IActionResult GetTareasByIdTablero(int idTablero)
-    {
-        
-        
-    }
-
-
+  
     [HttpGet]
     public IActionResult AgregarTarea(){ //Si agrego parametros envia un bad request
         if(!IsLogged()) return RedirectToAction("Index", "Login");

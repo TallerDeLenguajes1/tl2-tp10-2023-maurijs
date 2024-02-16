@@ -22,7 +22,7 @@ public class TableroController : Controller
         this.usuarioRepository = usuarioRepository;
     }
 
-   public IActionResult Index(){
+   public IActionResult Index(int? idUsuario){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         List<Tablero> listaTableros;
         if (IsAdmin())
@@ -32,7 +32,7 @@ public class TableroController : Controller
             //No es admin
             // Tableros que sean propiedad del usuario logueado
             listaTableros = tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado);
-            var tareas = tareaRepository.GetAllTareasDeUsuario(IdUsuarioLogueado);
+            var tareas = tareaRepository.GetTareasAsignadasAUsuario(IdUsuarioLogueado);
             // Si un tablero posee una tarea del usuario logueado (por mas que no sea el propietario) debe mostrarse en el index
             foreach (var tarea in tareas)
             {
