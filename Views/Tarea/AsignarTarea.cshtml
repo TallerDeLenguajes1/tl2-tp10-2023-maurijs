@@ -9,11 +9,11 @@
     <div class="form-group">
         <input hidden asp-for="@Model.IdTarea">
         <label asp-for="@Model.IdUsuarioAsignado">Asignar a usuario:</label>
-        <select asp-for="@Model.IdUsuarioAsignado" class="form-select" id="idTablero">
+        <select asp-for="@Model.IdUsuarioAsignado" class="form-select w-50" aria-label="Default select example" id="idTablero">
+            <option value="-1">Sin asignar</option>
             @foreach(var usuario in Model.usuarios) { // La tarea pertenecera a algun tablero del usuario
                 <option value="@usuario.Id">@usuario.Nombre</option>
             }
-            <option value="0">Sin Asignar</option>
         </select>
     </div>
     <button type="submit" class="btn btn-primary">Enviar</button>

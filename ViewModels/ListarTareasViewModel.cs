@@ -24,6 +24,8 @@ public class ElementoTareaViewModel{ // elementoTareaViewModel
     public string NombreUsuarioAsignado {get;set;}
     [Required(ErrorMessage = "Este campo es requerido.")]
     public string NombreUsuarioPropietario {get;set;}
+    [Required(ErrorMessage = "Este campo es requerido.")]
+    public int IdPropietario {get;set;}
     
     public ElementoTareaViewModel(){}
 
@@ -38,6 +40,7 @@ public class ElementoTareaViewModel{ // elementoTareaViewModel
         Estado = t.Estado;
         NombreUsuarioAsignado = t.NombreUsuarioAsignado;
         NombreUsuarioPropietario = t.NombreUsuarioPropietario;
+        IdPropietario = t.IdPropietario;
     }
 
 
@@ -63,14 +66,10 @@ public class ElementoTareaViewModel{ // elementoTareaViewModel
 public class ListarTareasViewModel
 {
     public bool IsAdmin {get;set;}
-
-    //ERROR
-    // Delete CASCADE a los usuarios y tableros. Y si borro el usuario, las tareas quedan sin asignar
-    //Esto va fuera del viewModel (podria agregar en el modelo de tarea el nombre del usuario asignado, y el nombre del tablero al que pertenece)
+    public int IdUsuarioLogueado {get;set;}
     public List<ElementoTareaViewModel> ListaTareas {get; set;}
     public bool VerTableroIndividual {get;set;} //Solo es true cuando quiero ver las tareas de un solo tablero
     public string NombreDelTablero {get;set;} //Solo para cuando quiero ver todas las tareas de un determinado tablero
-    public int IdPropietarioDelTablero {get;set;} //Solo para cuando quiero ver todas las tareas de un determinado tablero
     public static List<ElementoTareaViewModel> ToViewModel(List<Tarea> listaTareas)
     {
         var listaTareaVM = new List<ElementoTareaViewModel>();
@@ -82,3 +81,6 @@ public class ListarTareasViewModel
         return listaTareaVM;
     }
 }
+
+
+//Cuando borro un usuario, todas las tareas donde el estaba asignado (que no sean de sus tableros), deberian figurar como sin asignal (nulo)

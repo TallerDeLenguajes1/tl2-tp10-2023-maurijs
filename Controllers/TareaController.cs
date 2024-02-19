@@ -25,60 +25,76 @@ public class TareaController : Controller
 
     //Muestra Usuarios
     public IActionResult Index(int? idTablero){
-        if(!IsLogged()) return RedirectToAction("Index", "Login");
-
         try{
+            if(!IsLogged()) return RedirectToAction("Index", "Login");
+
             var listaTareas = new List<Tarea>();
-            var GetTareasViewModel = new ListarTareasViewModel(usuarioRepository);
-            GetTareasViewModel.VerTableroIndividual = false;
+            var ViewModel = new ListarTareasViewModel {
+                VerTableroIndividual = idTablero.HasValue,
+                IsAdmin = IsAdmin(),
+                IdUsuarioLogueado = IdUsuarioLogueado
+            };
 
-            if(idTablero.HasValue){
-                var Tablero = tableroRepository.GetTableroById(idTablero);
-                listaTareas = tareaRepository.GetAllTareasDeTablero(idTablero); // Si idTablero es nulo se usara el valor 0
-                GetTareasViewModel.TareasFromTablerosDelUsuario = ListarTareasViewModel.ToViewModel(listaTareas);
-
-                GetTareasViewModel.IsAdmin = IsAdmin();
-                GetTareasViewModel.GetNombresDeUsuario();
-                GetTareasViewModel.NombreDelTablero = Tablero.Nombre;
-                GetTareasViewModel.IdPropietarioDelTablero = Tablero.IdUsuarioPropietario;
-                GetTareasViewModel.VerTableroIndividual = true;
-                return View(GetTareasViewModel);
+            if (idTablero.HasValue){
+                listaTareas = tareaRepository.GetAllTareasDeTablero(idTablero);
+                ViewModel.NombreDelTablero = tableroRepository.GetTableroById(idTablero).Nombre;
+                ViewModel.ListaTareas = ListarTareasViewModel.ToViewModel(listaTareas);            
+                return View(ViewModel);
             }
 
             if (IsAdmin())
             {
                 listaTareas = tareaRepository.GetAllTareas();
-                GetTareasViewModel.TodasLasTareas = ListarTareasViewModel.ToViewModel(listaTareas); 
-                GetTareasViewModel.IsAdmin = true;
-
+                ViewModel.ListaTareas = ListarTareasViewModel.ToViewModel(listaTareas);
             }else {
-                GetTareasViewModel.IsAdmin = false; 
                 //Tareas asignadas al usuario
-                listaTareas = tareaRepository.GetTareasAsignadasAUsuario(IdUsuarioLogueado);
-                GetTareasViewModel.TareasAsignadasAlUsuario = ListarTareasViewModel.ToViewModel(listaTareas); 
+                var tareasDelUsuario = tareaRepository.GetTareasAsignadasAUsuario(IdUsuarioLogueado);
+                //Tareas  pertenecientes a sus tableros
+                listaTareas = tareaRepository.GetTareasFromTablerosDelUsuario(IdUsuarioLogueado);
+                //Concateno ambas listas
+                foreach (var tarea in tareasDelUsuario)
+                {
+                    if (!Contiene(listaTareas, tarea.Id))
+                    {
+                        listaTareas.Add(tarea);
+                    }
+                }
 
-                //Tareas pertenecientes a sus tableros (pueden o no estar asignadas a el mismo)
-                var tareasDeSusTableros = tareaRepository.GetTareasFromTablerosDelUsuario(IdUsuarioLogueado);
-                GetTareasViewModel.TareasFromTablerosDelUsuario = ListarTareasViewModel.ToViewModel(tareasDeSusTableros); 
+                ViewModel.ListaTareas = ListarTareasViewModel.ToViewModel(listaTareas);
             }
-            GetTareasViewModel.GetNombresDeUsuario();
-            return View(GetTareasViewModel);
+            return View(ViewModel);
         } 
         catch (Exception ex)
         {
             _logger.LogError($"Error: {ex.ToString()}");
+            return RedirectToAction("Index");
         }
-        return RedirectToAction("Index");
     }
 
-  
+    private bool Contiene(List<Tarea> listaTareas, int idTarea)
+    {
+        foreach (var tarea in listaTareas)
+        {
+            if (idTarea == tarea.Id) return true;
+        }
+        return false;
+    }
+
     [HttpGet]
     public IActionResult AgregarTarea(){ //Si agrego parametros envia un bad request
         if(!IsLogged()) return RedirectToAction("Index", "Login");
+        var cantidadDeTableros = tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado).Count();
+
+        /*if(cantidadDeTableros == 0) { Otra solucion es establecer un mensaje
+            ViewData["Error"] = "Debes crear un tablero primero para poder crear una tarea.";
+            ViewBag.Mensaje = "Debes crear un tablero primero para poder crear una tarea.";
+            TempData["Error"] = "Debes crear un tablero primero para poder crear una tarea."; // TempData es temporal, la variable se limpia luego de otra peticion
+        }*/
         var addTareaVM = new AddTareaViewModel
         {
-            tablerosDisponibles =  tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado),
-            usuariosParaAsignar = usuarioRepository.GetAll()
+            TablerosDisponibles =  tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado),
+            UsuariosParaAsignar = usuarioRepository.GetAll(),
+            CantidadDeTableros = cantidadDeTableros
         };
         return View(addTareaVM);
     }
@@ -110,15 +126,16 @@ public class TareaController : Controller
             var tareaVM = new UpdateTareaViewModel(tarea)
             {
                 UsuariosParaAsignar = usuarioRepository.GetAll(),
-                TablerosParaAsignar = tableroRepository.GetAllTablerosDeUsuario(IdUsuarioLogueado)
-            };
-            return View(tareaVM);
+                TablerosParaAsignar = tableroRepository.GetAllTablerosDeUsuario(tarea.IdPropietario),
+                NombreTableroAsignado = tableroRepository.GetTableroById(tarea.IdTablero).Nombre
+            }; 
+            return View("UpdateTarea", tareaVM);
         }
         catch (Exception ex) 
         {
             _logger.LogError($"Error: {ex.ToString}");
+            return RedirectToAction("Index");
         }
-        return RedirectToAction("Index");
     }
 
     [HttpPost]

@@ -16,7 +16,8 @@ public class UpdateUsuarioViewModel{
     private Rol rol;
     [Required(ErrorMessage = "Este campo es requerido.")]
     public Rol Rol { get => rol; set => rol = value; }
-
+    [Required(ErrorMessage = "Este campo es requerido.")]
+    public int IdUsuarioLogueado {get;set;}
     public UpdateUsuarioViewModel(){}
     public UpdateUsuarioViewModel(Usuario usuario)
     {   

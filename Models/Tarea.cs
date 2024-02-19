@@ -17,6 +17,7 @@ namespace tp10.Models
     private EstadoTarea estado; 
     private int idUsuarioAsignado;
     private string nombreUsuarioAsignado;
+    private int idPropietario;
     private string nombreUsuarioPropietario;
     public int Id { get => id; set => id = value; }
     public string Nombre { get => nombre; set => nombre = value; }
@@ -27,5 +28,6 @@ namespace tp10.Models
     public int IdTablero { get => idTablero; set => idTablero = value; }
     public string NombreUsuarioAsignado { get => nombreUsuarioAsignado; set => nombreUsuarioAsignado = value; }
     public string NombreUsuarioPropietario { get => nombreUsuarioPropietario; set => nombreUsuarioPropietario = value; }
+    public int IdPropietario { get => idPropietario; set => idPropietario = value; }
     }   
 }

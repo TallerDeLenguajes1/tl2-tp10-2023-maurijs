@@ -25,19 +25,20 @@ public class TableroController : Controller
    public IActionResult Index(int? idUsuario){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         List<Tablero> listaTableros;
-        ListarTablerosViewModel ViewModel = new ListarTablerosViewModel {
+        var ViewModel = new ListarTablerosViewModel {
             IsAdmin = IsAdmin(),
-            VerTablerosDeUsuarioIndividual = idUsuario.HasValue
+            VerTablerosDeUsuarioIndividual = idUsuario.HasValue,
+            IdUsuarioLogueado = IdUsuarioLogueado
         };
         
         try
         {
             if(idUsuario.HasValue)  
             {   
-                ViewModel.NombreUsuario = usuarioRepository.GetUsuarioById(idUsuario).Nombre;
+                ViewModel.NombrePropietarioTablero = usuarioRepository.GetUsuarioById(idUsuario).Nombre;
                 listaTableros = tableroRepository.GetAllTablerosDeUsuario(idUsuario);
             }
-            else if (IsAdmin()) // Si no quiere ver los tableros de un usuario individual
+            else if (IsAdmin()) // Si no quiere ver los tableros de un usuario individual y es admin
             {
                 listaTableros = tableroRepository.GetAllTableros();
             } else{
@@ -126,7 +127,17 @@ public class TableroController : Controller
     public IActionResult DeleteTablero(int idTablero){
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         try{
-            tableroRepository.EliminarTablero(idTablero);
+            var tablero = tableroRepository.GetTableroById(idTablero);
+            //Solo puedo borrar el tablero si el usuario logueado es el propietario o el admin
+            if(IdUsuarioLogueado == tablero.IdUsuarioPropietario  || IsAdmin())
+            {
+                //Al eliminar un tablero se eliminan sus tareas (No funciona el borrado en cascada en mysqlite)
+                foreach (var tarea in tareaRepository.GetAllTareasDeTablero(idTablero))
+                {
+                    tareaRepository.EliminarTarea(tarea.Id);
+                }
+                tableroRepository.EliminarTablero(idTablero);
+            }
             return RedirectToAction("Index");
         }
         catch (Exception ex) {

@@ -5,38 +5,48 @@
 @model AddTareaViewModel
 
 <h1>@ViewData["Title"]</h1>
-<form asp-controller="Tarea" asp-action="AgregarTareaFromForm" method="post">
-    <div class="form-group">
-
-        <label asp-for="@Model.IdTablero">Tablero</label>
-        <select asp-for="@Model.IdTablero" class="form-select" id="idTablero">
-            @foreach(var tablero in Model.tablerosDisponibles) { // La tarea pertenecera a algun tablero del usuario
-                <option value="@tablero.Id">@tablero.Nombre</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label asp-for="@Model.Nombre">Nombre</label>
-        <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
-    </div>
-    <div class="form-group">
-        <label asp-for="@Model.Descripcion">Descripcion</label>
-        <input asp-for="@Model.Descripcion" class="form-control" id="descripcion" />
-    </div>
-    <div class="form-group">
-        <label asp-for="@Model.Color">Color</label>
-        <input asp-for="@Model.Color" class="form-control" id="color" />
-    </div>
-    <div class="form-group">
-        <label asp-for="@Model.IdUsuarioAsignado">Asignar a usuario:</label>
-        <select asp-for="@Model.IdUsuarioAsignado" class="form-select" id="idTablero">
-            @foreach(var usuario in Model.usuariosParaAsignar) { // La tarea pertenecera a algun tablero del usuario
-                <option value="@usuario.Id">@usuario.Nombre</option>
-            }
-            <option value="0">Sin Asignar</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Enviar</button>
-</form>
+    @if(Model.CantidadDeTableros == 0)
+    {
+        <div>
+            <h4>No tiene tableros disponibles, debe crear uno primero</h4>
+            <a class="btn btn-success mr-2" asp-controller="Tablero" asp-action="AgregarTablero">
+                <i class="fas fa-plus-circle"></i> Crear Tablero
+            </a>
+        </div>
+        
+    }else{
+        <form asp-controller="Tarea" asp-action="AgregarTareaFromForm" method="post">
+            <div class="form-group">
+                <label asp-for="@Model.IdTablero">Tablero</label>
+                <select asp-for="@Model.IdTablero" class="form-select w-50" aria-label="Default select example" id="idTablero">
+                    @foreach(var tablero in Model.TablerosDisponibles) { // La tarea pertenecera a algun tablero del usuario
+                        <option value="@tablero.Id">@tablero.Nombre</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Nombre">Nombre</label>
+                <input asp-for="@Model.Nombre" class="form-control w-50" id="nombre" />
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Descripcion">Descripcion</label>
+                <input asp-for="@Model.Descripcion" class="form-control w-50" id="descripcion" />
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Color">Color</label>
+                <input asp-for="@Model.Color" class="form-control w-50" id="color" />
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.IdUsuarioAsignado">Asignar a usuario:</label>
+                <select asp-for="@Model.IdUsuarioAsignado" class="form-select w-50" aria-label="Default select example">
+                    <option value="-1">Sin asignar</option>
+                    @foreach(var usuario in Model.UsuariosParaAsignar) { // La tarea pertenecera a algun tablero del usuario
+                        <option value="@usuario.Id">@usuario.Nombre</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+    }
 
 @section Scripts { <partial name="_ValidationScriptsPartial" /> }

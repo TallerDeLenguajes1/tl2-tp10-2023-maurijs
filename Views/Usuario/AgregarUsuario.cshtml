@@ -9,17 +9,17 @@
 <form asp-controller="Usuario" asp-action="AgregarUsuarioFromForm" method="post">
     <div class="form-group">
         <label asp-for="@Model.Nombre"></label>
-        <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
+        <input asp-for="@Model.Nombre" class="form-control w-50" id="nombre" />
         <span asp-validation-for="@Model.Nombre" class="text-danger"></span>   
     </div>
     <div class="form-group">
         <label asp-for="@Model.Contrasenia"></label>
-        <input asp-for="@Model.Contrasenia" class="form-control" id="contrasenia" />
+        <input asp-for="@Model.Contrasenia" class="form-control w-50" id="contrasenia" />
         <span asp-validation-for="@Model.Contrasenia" class="text-danger"></span>   
     </div>
     <div class="form-group">
         <label asp-for="@Model.Rol"></label>
-        <select asp-for="@Model.Rol" asp-items="Html.GetEnumSelectList<Rol>()" class="form-control">
+        <select asp-for="@Model.Rol" asp-items="Html.GetEnumSelectList<Rol>()" class="form-control w-50">
             <option value="">Seleccionar Nivel</option>
         </select>
         <span asp-validation-for="@Model.Rol" class="text-danger"></span> 

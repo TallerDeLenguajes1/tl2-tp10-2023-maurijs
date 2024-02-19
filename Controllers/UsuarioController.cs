@@ -10,10 +10,15 @@ public class UsuarioController : Controller
 {
     private readonly ILogger<UsuarioController> _logger;
     private readonly IUsuarioRepository usuarioRepository;
+    private readonly ITableroRepository tableroRepository;
+    private readonly ITareaRepository tareaRepository;
+    private int IdUsuarioLogueado => Convert.ToInt32(HttpContext.Session.GetString("Id"));
 
-    public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository ){
+    public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepository usuarioRepository, ITableroRepository tableroRepository, ITareaRepository tareaRepository){
         _logger = logger;
         this.usuarioRepository = usuarioRepository;
+        this.tableroRepository = tableroRepository;
+        this.tareaRepository = tareaRepository;
     }
 
     //Muestra Usuarios
@@ -22,8 +27,13 @@ public class UsuarioController : Controller
         if(!IsLogged()) return RedirectToAction("Index", "Login");
         try{
             var usuarios = usuarioRepository.GetAll();
-            var usuariosVM = ListarUsuarioViewModel.ToViewModel(usuarios); 
-            return View(usuariosVM);
+            var ViewModel = new ListarUsuariosViewModel
+            {
+                ListaUsuarios = ElementoUsuarioViewModel.ToViewModel(usuarios),
+                IsAdmin = IsAdmin(),
+                IdUsuarioLogueado = IdUsuarioLogueado
+            };
+            return View(ViewModel);
         }catch(Exception ex){
             _logger.LogError(ex.ToString());
             return RedirectToAction("Index");
@@ -49,6 +59,7 @@ public class UsuarioController : Controller
         catch(Exception ex)
         {
             _logger.LogError(ex.ToString());
+            return RedirectToAction("Index");
         } 
         return RedirectToAction("Index");
     }
@@ -58,7 +69,12 @@ public class UsuarioController : Controller
         if(!IsLogged())return RedirectToAction("Index", "Login");
         if(!IsAdmin()) return RedirectToAction("Index", "Home");
         var usuario = usuarioRepository.GetUsuarioById(idUsuario);
-        return View(new UpdateUsuarioViewModel(usuario));
+        var ViewModel = new UpdateUsuarioViewModel(usuario)
+        {
+            IdUsuarioLogueado = IdUsuarioLogueado
+        };
+        
+        return View(ViewModel);
     }
 
     [HttpPost]
@@ -97,7 +113,15 @@ public class UsuarioController : Controller
         {
             if(!IsLogged()) return RedirectToAction("Index", "Login");  
             if(!IsAdmin()) return RedirectToAction("Index", "Home");  
-            //Si no es admin o si el usuario que quiere eliminar no es el mismo entonces sale
+
+            EliminarTablerosDelUsuario(idUsuario);
+            //A las tareas donde el usuario estaba asignado debo dejar el campo idUsuarioAsignado en nulll
+            foreach (var tarea in tareaRepository.GetTareasAsignadasAUsuario(idUsuario))
+            {   
+                tarea.IdUsuarioAsignado = -1;
+                tareaRepository.ModificarTarea(tarea);
+            }
+
             usuarioRepository.EliminarUsuario(idUsuario);
             return RedirectToAction("Index"); 
         }
@@ -107,6 +131,24 @@ public class UsuarioController : Controller
             return RedirectToAction("Index");   
         }
     }
+
+    public void EliminarTablerosDelUsuario(int idUsuario)
+    {
+        foreach (var tablero in tableroRepository.GetAllTablerosDeUsuario(idUsuario))
+            {   
+                //Primero debo eliminar los tableros del usuario, y las tareas pertenecientes a esos tableros
+                EliminarTareasDelTablero(tablero.Id);
+                tableroRepository.EliminarTablero(tablero.Id);
+            }
+    }
+    public void EliminarTareasDelTablero(int IdTablero)
+    {
+        foreach (var tarea in tareaRepository.GetAllTareasDeTablero(IdTablero))
+        {   
+            tareaRepository.EliminarTarea(tarea.Id);
+        }
+    }
+
 
     public IActionResult Privacy(){
         return View();

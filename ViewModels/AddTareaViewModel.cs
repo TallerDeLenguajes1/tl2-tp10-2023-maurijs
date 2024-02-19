@@ -4,21 +4,19 @@ using tp10.Models;
 namespace Tp11.ViewModels;
 
 public class AddTareaViewModel{
+    public List<Tablero> TablerosDisponibles {get; set;}
+    public List<Usuario> UsuariosParaAsignar {get; set;}
+    public int CantidadDeTableros {get;set;}
 
-    public List<Tablero> tablerosDisponibles {get; set;}
-    public List<Usuario> usuariosParaAsignar {get; set;}
-    private int idTablero;
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public int IdTablero { get => idTablero; set => idTablero = value; }
-    private string nombre;
+    public int IdTablero { get; set ; }
+    
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public string Nombre { get => nombre; set => nombre = value; }
-    private string descripcion;
+    public string Nombre { get; set; }
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public string Descripcion { get => descripcion; set => descripcion = value; }
-    private string color;
+    public string Descripcion { get; set; }
     [Required(ErrorMessage = "Este campo es requerido.")]
-    public string Color { get => color; set => color = value; }
+    public string Color { get; set ; }
     
     [Required(ErrorMessage = "Este campo es requerido.")]
     public int IdUsuarioAsignado {get; set;}
@@ -26,10 +24,10 @@ public class AddTareaViewModel{
 
     public AddTareaViewModel(Tarea t)
     {
-        nombre = t.Nombre;
-        descripcion = t.Descripcion;
-        color = t.Color;
-        idTablero = t.IdTablero;
+        Nombre = t.Nombre;
+        Descripcion = t.Descripcion;
+        Color = t.Color;
+        IdTablero = t.IdTablero;
     }
 
 
@@ -51,10 +49,11 @@ public class AddTareaViewModel{
     {
         var tarea = new Tarea
         {
-            Nombre = nombre,
-            Descripcion = descripcion,
-            IdTablero = idTablero,
-            Color = color,
+            Nombre = Nombre,
+            Descripcion = Descripcion,
+            IdTablero = IdTablero,
+            Color = Color,
+            IdUsuarioAsignado = IdUsuarioAsignado
         };
         return tarea;
     }

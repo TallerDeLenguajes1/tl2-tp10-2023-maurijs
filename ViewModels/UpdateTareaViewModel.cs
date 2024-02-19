@@ -7,6 +7,10 @@ public class UpdateTareaViewModel{
 
     public List<Usuario> UsuariosParaAsignar {get;set;}
     public List<Tablero> TablerosParaAsignar {get;set;}
+    public string NombreUsuarioAsignado {get;set;}
+    public string NombreTableroAsignado {get;set;}
+    [Required(ErrorMessage = "Este campo es requerido.")]
+    public int IdUsuarioAsignado {get;set;}
 
     [Required(ErrorMessage = "Este campo es requerido.")]
     public int Id {get;set;}
@@ -20,20 +24,20 @@ public class UpdateTareaViewModel{
     public string Descripcion {get;set;}
     [Required(ErrorMessage = "Este campo es requerido.")]
     public string Color {get;set;}
-    [Required(ErrorMessage = "Este campo es requerido.")]
-    public int IdUsuarioAsignado {get;set;}
     
     public UpdateTareaViewModel(){}
 
     public UpdateTareaViewModel(Tarea t)
     {
         Id = t.Id;
+        IdTablero = t.IdTablero;
         Nombre = t.Nombre;
         Descripcion = t.Descripcion;
         Color = t.Color;
         IdUsuarioAsignado = t.IdUsuarioAsignado;
         IdTablero = t.IdTablero;
         Estado = t.Estado;
+        NombreUsuarioAsignado = t.NombreUsuarioAsignado;
     }
 
     //Recibe una lista de tareas y crea un lista de TareasViewModel

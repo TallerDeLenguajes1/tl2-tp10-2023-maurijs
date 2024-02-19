@@ -4,12 +4,7 @@
 
 @using Tp11.ViewModels
 @using tp10.Models
-@model GetTablerosViewModel//Especifico q la view espera un obj de ese tipo, q podre usar con Model o con su nombre original
-
-@{
-    bool isAdmin = (ViewContext.HttpContext.Session.GetString("Rol") == "administrador");
-    int idUsuarioLogueado = Convert.ToInt32(ViewContext.HttpContext.Session.GetString("Id"));
-}
+@model ListarTablerosViewModel//Especifico q la view espera un obj de ese tipo, q podre usar con Model o con su nombre original
 
 <div class="container mt-4"> <!-- Agregado un contenedor para alinear el botón -->
     <div class="col">
@@ -20,11 +15,11 @@
             </a>
             @if(Model.VerTablerosDeUsuarioIndividual)
             {
-                @if(isAdmin){
+                @if(Model.IsAdmin){
                     <a class="btn btn-info ml-2" asp-controller="Tablero" asp-action="Index">
                         <i class="fas fa-list"></i> Ver todos los tableros
                     </a>
-                } else if(!isAdmin) {
+                } else {
                     <a class="btn btn-info ml-2" asp-controller="Tablero" asp-action="Index">
                         <i class="fas fa-list"></i> Ver mis tableros
                     </a>
@@ -38,8 +33,8 @@
         <tr> 
             @if(Model.VerTablerosDeUsuarioIndividual)
             {
-                <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Tableros de @Model.NombreUsuario</th>
-            } else if(isAdmin)
+                <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Tableros de @Model.NombrePropietarioTablero</th>
+            } else if(Model.IsAdmin)
             {
                 <th colspan="7" class="text-center display-5 text-primary font-weight-bold">Todos los tableros</th>
             }else{
@@ -68,7 +63,7 @@
                     <td>@tablero.Descripcion</td>         
                     <td>@tablero.NombrePropietario </td>
                     <td>
-                        @if(idUsuarioLogueado == tablero.IdUsuarioPropietario || isAdmin){
+                        @if(Model.IdUsuarioLogueado == tablero.IdUsuarioPropietario || Model.IsAdmin){
                             <a class="btn btn-primary" asp-controller="Tablero" asp-action="EditarTablero" asp-route-idTablero="@tablero.Id">
                                 <i class="fas fa-edit"></i> Editar
                             </a>

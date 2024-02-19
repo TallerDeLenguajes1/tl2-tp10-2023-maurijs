@@ -39,7 +39,7 @@ namespace EspacioRepositorios
         public List<Usuario> GetAll()
         {
             List<Usuario> usuarios = new List<Usuario>();
-            string queryString = "SELECT id, nombre_usuario FROM Usuario;";
+            string queryString = "SELECT id, nombre_usuario, rol FROM Usuario;";
             using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
             {
                 try{
@@ -53,7 +53,8 @@ namespace EspacioRepositorios
                                 var usuario = new Usuario
                                 {
                                     Id = Convert.ToInt32(reader["id"]),
-                                    Nombre = reader["nombre_usuario"].ToString()
+                                    Nombre = reader["nombre_usuario"].ToString(),
+                                    Rol = (Rol)Convert.ToInt32(reader["rol"])
                                 };
                                 usuarios.Add(usuario);
                             }

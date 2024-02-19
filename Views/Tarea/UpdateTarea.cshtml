@@ -18,35 +18,41 @@
     @if(isAdmin){
     // Si no es admin solo puede modificar el estado
     <div class="form-group">
-        <label asp-for="@Model.IdTablero">Asignar a tablero:</label>
-        <select asp-for="@Model.IdTablero" class="form-select" id="idTablero">
-            @foreach(var tablero in Model.TablerosParaAsignar) { // La tarea pertenecera a algun tablero del usuario
+        <label class ="form-label" asp-for="@Model.IdTablero">Asignar a tablero:</label>
+        <select asp-for="@Model.IdTablero" class="form-select w-50" aria-label="Default select example" id="IdTablero">
+            
+            <option value="@Model.IdTablero" selected>@Model.NombreTableroAsignado</option>
+            @foreach(var tablero in Model.TablerosParaAsignar)
+            {
                 <option value="@tablero.Id">@tablero.Nombre</option>
             }
         </select>
     </div>
     <div class="form-group">
-        <label asp-for="@Model.Nombre">Nombre</label>
-        <input asp-for="@Model.Nombre" class="form-control" id="nombre" />
+        <label class ="form-label" asp-for="@Model.Nombre">Nombre</label>
+        <input asp-for="@Model.Nombre" class="form-control w-50" id="nombre" value="@Model.Nombre"/>
+        <span asp-validation-for="@Model.Nombre" class="text-danger"></span>
+
     </div>
     <div class="form-group">
-        <label asp-for="@Model.Descripcion">Descripcion</label>
-        <input asp-for="@Model.Descripcion" class="form-control" id="descripcion" />
+        <label class ="form-label" asp-for="@Model.Descripcion">Descripcion</label>
+        <input asp-for="@Model.Descripcion" class="form-control w-50" id="descripcion" value="@Model.Descripcion" />
+        <span asp-validation-for="@Model.Descripcion" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="@Model.Color">color</label>
-        <input asp-for="@Model.Color" class="form-control" id="color" />
+        <label class ="form-label" asp-for="@Model.Color">color</label>
+        <input asp-for="@Model.Color" class="form-control w-50" id="color" value="@Model.Color"/>
+        <span asp-validation-for="@Model.Color" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="@Model.IdUsuarioAsignado">Asignar a usuario:</label>
-        <select asp-for="@Model.IdUsuarioAsignado" class="form-select" id="idTablero">
-            @foreach(var usuario in Model.UsuariosParaAsignar) { // La tarea pertenecera a algun tablero del usuario
+        <label class ="form-label" asp-for="@Model.IdUsuarioAsignado">Asignar a usuario:</label>
+        <select asp-for="@Model.IdUsuarioAsignado" class="form-select w-50" aria-label="Default select example" id="IdUsuarioAsignado">
+            <option value="@Model.IdUsuarioAsignado" selected>@Model.NombreUsuarioAsignado</option>
+            @foreach(var usuario in Model.UsuariosParaAsignar) {
                 <option value="@usuario.Id">@usuario.Nombre</option>
             }
-            <option value="0">Sin Asignar</option>
-        </select>
+        </select> 
     </div>
-    <input hidden asp-for="@Model.IdUsuarioAsignado">
     } else if(idUsuarioLogueado == Model.IdUsuarioAsignado)
     { // Si es el asignado puede modificar su estado, todo lo demas estara oculto
         <input hidden asp-for="@Model.IdTablero">
@@ -57,10 +63,11 @@
     }
         
     <div class="form-group">
-        <label asp-for="@Model.Estado">Estado</label>
-        <select asp-for="@Model.Estado" asp-items="Html.GetEnumSelectList<EstadoTarea>()" class="form-control">
-            <option value="">Seleccionar Estado</option>
+        <label class ="form-label" asp-for="@Model.Estado">Estado</label>
+        <select asp-for="@Model.Estado" asp-items="Html.GetEnumSelectList<EstadoTarea>()" class="form-control w-50">
+            <option value="@Model.Estado" selected>@Model.Estado.ToString()</option>
         </select>
+        <span asp-validation-for="@Model.Estado" class="text-danger"></span> 
     </div>
     <button type="submit" class="btn btn-primary" >Enviar</button>
 </form>

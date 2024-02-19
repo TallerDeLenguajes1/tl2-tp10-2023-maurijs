@@ -145,3 +145,8 @@ body {
   margin: auto; 
   border: 1px solid #dedddd;
 }
+
+.updateForm{
+  padding: 1em;
+}
+

@@ -28,7 +28,11 @@ namespace EspacioRepositorios
                         command.Parameters.Add(new SQLiteParameter("@nombre", tarea.Nombre));
                         command.Parameters.Add(new SQLiteParameter("@descripcion", tarea.Descripcion));
                         command.Parameters.Add(new SQLiteParameter("@color", tarea.Color));
-                        command.Parameters.Add(new SQLiteParameter("@id_usuario_asignado",tarea.IdUsuarioAsignado));
+                        if(tarea.IdUsuarioAsignado != -1){
+                            command.Parameters.Add(new SQLiteParameter("@id_usuario_asignado",tarea.IdUsuarioAsignado));
+                        }else {
+                            command.Parameters.Add(new SQLiteParameter("@id_usuario_asignado",null));   
+                        }
                         try{ // consultar si es necesario dos bloques try-catch
                             command.ExecuteNonQuery();
                         }
@@ -77,7 +81,7 @@ namespace EspacioRepositorios
 
 
 
-        public Tarea GetTareaById(int id)
+        public Tarea GetTareaById(int idTarea)
         {
             var tarea = new Tarea();
             using (SQLiteConnection connection = new SQLiteConnection(cadenaDeConexion))
@@ -85,19 +89,27 @@ namespace EspacioRepositorios
                 try{
                     connection.Open();
                     SQLiteCommand command = connection.CreateCommand();
-                    command.CommandText = " SELECT t.id_tarea, t.id_tablero, t.id_usuario_asignado, t.nombre, t.descripcion, t.color, t.estado FROM Tarea t INNER JOIN Usuario a ON a.id = t.id_usuario_asignado INNER JOIN Tablero m USING(id_tablero) INNER JOIN Usuario p ON m.id_usuario_propietario = p.id WHERE id_tarea = 6;";
-                    command.Parameters.Add(new SQLiteParameter("@idUsuario", id));
+                    command.CommandText = "SELECT t.id_tarea, t.id_tablero, t.id_usuario_asignado, t.nombre, t.descripcion, t.color, t.estado,  a.nombre_usuario AS usuario_asignado, p.nombre_usuario AS propietario, p.id AS id_propietario "
+                                        + "FROM Tarea t "
+                                        + "INNER JOIN Tablero m USING(id_tablero) "
+                                        + "INNER JOIN Usuario p ON m.id_usuario_propietario = p.id "
+                                        + "LEFT JOIN Usuario a ON a.id = t.id_usuario_asignado " //LEFT JOIN ya que puede haber tareas sin usuario asignado (toma valor null) 
+                                        + "WHERE id_tarea = @idTarea;";
+                    command.Parameters.Add(new SQLiteParameter("@idTarea", idTarea));
                     using (SQLiteDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             tarea.Id = Convert.ToInt32(reader["id_tarea"]);
                             tarea.IdTablero = Convert.ToInt32(reader["id_tablero"]);
-                            tarea.IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]);
                             tarea.Nombre = reader["nombre"].ToString();
                             tarea.Descripcion = reader["descripcion"].ToString();
                             tarea.Color = reader["color"].ToString();
                             tarea.Estado = (EstadoTarea)Convert.ToInt32(reader["estado"]);
+                            tarea.NombreUsuarioPropietario = reader["propietario"].ToString();
+                            tarea.IdPropietario = Convert.ToInt32(reader["id_propietario"]);
+                            tarea.IdUsuarioAsignado = reader["id_usuario_asignado"] != DBNull.Value ? Convert.ToInt32(reader["id_usuario_asignado"]) : -1; // Valor predeterminado ppr si es null
+                            tarea.NombreUsuarioAsignado = reader["usuario_asignado"] != DBNull.Value ? reader["usuario_asignado"].ToString() : "Sin asignar"; // Valor predeterminado por si es null
                         }
                     }
                 }
@@ -121,7 +133,12 @@ namespace EspacioRepositorios
                 {
                     connection.Open();
                     SQLiteCommand commando = connection.CreateCommand();
-                    commando.CommandText = "SELECT DISTINCT id_tarea, t.nombre, estado, t.descripcion, color, t.id_usuario_asignado, t.id_tablero, a.nombre_usuario AS usuario_asignado, p.nombre_usuario AS propietario FROM Tarea t INNER JOIN Usuario a ON a.id = t.id_usuario_asignado INNER JOIN Tablero m ON m.id_tablero = t.id_tablero INNER JOIN Usuario p ON p.id = m.id_usuario_propietario WHERE t.id_tablero = @idTablero;";
+                    commando.CommandText = "SELECT DISTINCT id_tarea, t.nombre, estado, t.descripcion, color, t.id_usuario_asignado, t.id_tablero, a.nombre_usuario AS usuario_asignado, p.nombre_usuario AS propietario, p.id AS id_propietario  "
+                                         + "FROM Tarea t "
+                                         + "INNER JOIN Tablero m ON m.id_tablero = t.id_tablero "
+                                         + "INNER JOIN Usuario p ON p.id = m.id_usuario_propietario "
+                                         + "LEFT JOIN Usuario a ON a.id = t.id_usuario_asignado " //LEFT JOIN ya que puede haber tareas sin usuario asignado (toma valor null) 
+                                         + "WHERE t.id_tablero = @idTablero;";
                     commando.Parameters.Add(new SQLiteParameter("@idTablero", idTablero));
                     using(SQLiteDataReader reader = commando.ExecuteReader())
                     {
@@ -131,13 +148,14 @@ namespace EspacioRepositorios
                             {
                                 Id = Convert.ToInt32(reader["id_tarea"]),
                                 IdTablero = Convert.ToInt32(reader["id_tablero"]),
-                                IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]),
                                 Nombre = reader["nombre"].ToString(),
                                 Descripcion = reader["descripcion"].ToString(),
                                 Color = reader["color"].ToString(),
                                 Estado = (EstadoTarea)Convert.ToInt32(reader["estado"]),
-                                NombreUsuarioAsignado = reader["usuario_asignado"].ToString(),
-                                NombreUsuarioPropietario = reader["propietario"].ToString()
+                                NombreUsuarioPropietario = reader["propietario"].ToString(),
+                                IdPropietario = Convert.ToInt32(reader["id_propietario"]),
+                                IdUsuarioAsignado = reader["id_usuario_asignado"] != DBNull.Value ? Convert.ToInt32(reader["id_usuario_asignado"]) : -1, // Valor predeterminado ppr si es null
+                                NombreUsuarioAsignado = reader["usuario_asignado"] != DBNull.Value ? reader["usuario_asignado"].ToString() : "Sin asignar", // Valor predeterminado por si es null
                             };
                             listaTareas.Add(tarea);
                         }
@@ -164,7 +182,12 @@ namespace EspacioRepositorios
                 {
                     connection.Open();
                     using (SQLiteCommand commando = connection.CreateCommand()) {
-                        commando.CommandText = "SELECT id_tarea, t.nombre, estado, t.descripcion, color, id_usuario_asignado, t.id_tablero, a.nombre_usuario AS usuario_asignado, p.nombre_usuario AS propietario FROM Tarea t INNER JOIN Usuario a ON t.id_usuario_asignado= a.id INNER JOIN Tablero m USING(id_tablero) INNER JOIN Usuario p ON m.id_usuario_propietario = p.idWHERE a.id = @idUsuario;";
+                        commando.CommandText = "SELECT id_tarea, t.nombre, estado, t.descripcion, color, id_usuario_asignado, t.id_tablero, a.nombre_usuario AS usuario_asignado, p.nombre_usuario AS propietario, p.id AS id_propietario "
+                                            +  "FROM Tarea t "
+                                            +  "INNER JOIN Usuario a ON t.id_usuario_asignado= a.id "
+                                            +  "INNER JOIN Tablero m USING(id_tablero) "
+                                            +  "INNER JOIN Usuario p ON m.id_usuario_propietario = p.id " //Aca no es necesario LEFT JOIN
+                                            +  "WHERE a.id = @idUsuario;";
                         commando.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
                         using(SQLiteDataReader reader = commando.ExecuteReader())
                         {
@@ -173,13 +196,14 @@ namespace EspacioRepositorios
                                 {
                                     Id = Convert.ToInt32(reader["id_tarea"]),
                                     IdTablero = Convert.ToInt32(reader["id_tablero"]),
-                                    IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]),
                                     Nombre = reader["nombre"].ToString(),
-                                    Descripcion = reader["descripcion"].ToString(),
                                     Color = reader["color"].ToString(),
                                     Estado = (EstadoTarea)Convert.ToInt32(reader["estado"]),
-                                    NombreUsuarioAsignado = reader["usuario_asignado"].ToString(),
-                                    NombreUsuarioPropietario = reader["propietario"].ToString()
+                                    Descripcion = reader["descripcion"].ToString(),
+                                    NombreUsuarioPropietario = reader["propietario"].ToString(),
+                                    IdPropietario = Convert.ToInt32(reader["id_propietario"]),
+                                    IdUsuarioAsignado = reader["id_usuario_asignado"] != DBNull.Value ? Convert.ToInt32(reader["id_usuario_asignado"]) : -1, // Valor predeterminado ppr si es null
+                                    NombreUsuarioAsignado = reader["usuario_asignado"] != DBNull.Value ? reader["usuario_asignado"].ToString() : "Sin asignar", // Valor predeterminado por si es null
                                 };
                                 listaTareas.Add(tarea);
                             }
@@ -213,7 +237,11 @@ namespace EspacioRepositorios
                         command.Parameters.Add(new SQLiteParameter("@estado",(int)tarea.Estado));
                         command.Parameters.Add(new SQLiteParameter("@color", tarea.Color));
                         command.Parameters.Add(new SQLiteParameter("@idTablero",tarea.IdTablero));
-                        command.Parameters.Add(new SQLiteParameter("@idUsuarioAsignado",tarea.IdUsuarioAsignado));
+                        if(tarea.IdUsuarioAsignado != -1) {
+                            command.Parameters.Add(new SQLiteParameter("@idUsuarioAsignado",tarea.IdUsuarioAsignado));
+                        } else{
+                            command.Parameters.Add(new SQLiteParameter("@idUsuarioAsignado", null));
+                        }
                         command.ExecuteNonQuery();
                     }
                 }
@@ -236,8 +264,12 @@ namespace EspacioRepositorios
                     connection.Open();
                     using (SQLiteCommand command = connection.CreateCommand())
                     {
-                        command.CommandText = $"UPDATE Tarea SET id_usuario_asignado = @idUsuario WHERE id_tarea = @idTarea;";
-                        command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
+                        if (idUsuario != -1) {  
+                            command.CommandText = $"UPDATE Tarea SET id_usuario_asignado = @idUsuario WHERE id_tarea = @idTarea;";
+                            command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
+                        } else { //La tarea no se asigna a nadie
+                            command.CommandText = $"UPDATE Tarea SET id_usuario_asignado = NULL WHERE id_tarea = @idTarea;";
+                        }
                         command.Parameters.Add(new SQLiteParameter("@idTarea", idTarea));
                         filasAfectadas = command.ExecuteNonQuery();
                     }
@@ -260,7 +292,10 @@ namespace EspacioRepositorios
             {
                 connection.Open();
                 using var command = connection.CreateCommand();
-                command.CommandText = "SELECT t.id_tarea, t.id_tablero, t.id_usuario_asignado, t.nombre, t.descripcion, t.color, t.estado, a.nombre_usuario AS usuario_asignado, p.nombre_usuario AS propietario FROM Tarea t INNER JOIN Usuario a ON a.id = t.id_usuario_asignado INNER JOIN Tablero m USING(id_tablero) INNER JOIN Usuario p ON m.id_usuario_propietario = p.id";
+                command.CommandText = "SELECT t.id_tarea, t.id_tablero, t.id_usuario_asignado, t.nombre, t.descripcion, t.color, t.estado, a.nombre_usuario AS usuario_asignado, p.nombre_usuario AS propietario,  p.id AS id_propietario FROM Tarea t "
+                                    + "INNER JOIN Usuario p ON m.id_usuario_propietario = p.id "
+                                    + "INNER JOIN Tablero m USING(id_tablero) "
+                                    + "LEFT JOIN Usuario a ON a.id = t.id_usuario_asignado"; //LEFT JOIN ya que puede haber tareas sin usuario asignado (toma valor null) 
                 command.ExecuteNonQuery();
                 using (SQLiteDataReader reader = command.ExecuteReader())
                 {
@@ -274,9 +309,10 @@ namespace EspacioRepositorios
                             Color = reader["color"].ToString(),
                             Estado = (EstadoTarea)Convert.ToInt32(reader["estado"]),
                             Descripcion = reader["descripcion"].ToString(),
-                            IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]),
-                            NombreUsuarioAsignado = reader["usuario_asignado"].ToString(),
-                            NombreUsuarioPropietario = reader["propietario"].ToString()
+                            NombreUsuarioPropietario = reader["propietario"].ToString(),
+                            IdPropietario = Convert.ToInt32(reader["id_propietario"]),
+                            IdUsuarioAsignado = reader["id_usuario_asignado"] != DBNull.Value ? Convert.ToInt32(reader["id_usuario_asignado"]) : -1, // Valor predeterminado ppr si es null
+                            NombreUsuarioAsignado = reader["usuario_asignado"] != DBNull.Value ? reader["usuario_asignado"].ToString() : "Sin asignar", // Valor predeterminado por si es null
                         };
                         listaTareas.Add(tarea);
                     }
@@ -302,7 +338,12 @@ namespace EspacioRepositorios
             {
                 connection.Open();
                 using var command = connection.CreateCommand();
-                command.CommandText = "SELECT t.id_tarea, t.id_tablero, t.id_usuario_asignado, t.nombre, t.descripcion, t.color, t.estado, a.nombre_usuario AS usuario_asignado, p.nombre_usuario AS propietario FROM Tarea t INNER JOIN Usuario a ON a.id = t.id_usuario_asignado INNER JOIN Tablero m USING(id_tablero) INNER JOIN Usuario p ON m.id_usuario_propietario = p.id WHERE m.id_usuario_propietario = @idUsuario;";
+                command.CommandText = "SELECT t.id_tarea, t.id_tablero, t.id_usuario_asignado, t.nombre, t.descripcion, t.color, t.estado, a.nombre_usuario AS usuario_asignado, p.nombre_usuario AS propietario,  p.id AS id_propietario " 
+                                    + "FROM Tarea t "
+                                    + "INNER JOIN Tablero m USING(id_tablero) "
+                                    + "INNER JOIN Usuario p ON m.id_usuario_propietario = p.id "
+                                    + "LEFT JOIN Usuario a ON a.id = t.id_usuario_asignado "//LEFT JOIN ya que puede haber tareas sin usuario asignado (toma valor null) 
+                                    + "WHERE m.id_usuario_propietario = @idUsuario;";
                 command.Parameters.Add(new SQLiteParameter("@idUsuario", idUsuario));
                 command.ExecuteNonQuery();
                 using (SQLiteDataReader reader = command.ExecuteReader())
@@ -317,9 +358,10 @@ namespace EspacioRepositorios
                             Color = reader["color"].ToString(),
                             Estado = (EstadoTarea)Convert.ToInt32(reader["estado"]),
                             Descripcion = reader["descripcion"].ToString(),
-                            IdUsuarioAsignado = Convert.ToInt32(reader["id_usuario_asignado"]),
-                            NombreUsuarioAsignado = reader["usuario_asignado"].ToString(),
-                            NombreUsuarioPropietario = reader["propietario"].ToString()
+                            NombreUsuarioPropietario = reader["propietario"].ToString(),
+                            IdPropietario = Convert.ToInt32(reader["id_propietario"]),
+                            IdUsuarioAsignado = reader["id_usuario_asignado"] != DBNull.Value ? Convert.ToInt32(reader["id_usuario_asignado"]) : -1, // Valor predeterminado para IdUsuarioAsignado si es null
+                            NombreUsuarioAsignado = reader["usuario_asignado"] != DBNull.Value ? reader["usuario_asignado"].ToString() : "Sin asignar", // Valor predeterminado para NombreUsuarioAsignado si es null
                         };
                         listaTareas.Add(tarea);
                     }
